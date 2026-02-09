@@ -15,23 +15,34 @@
 
 ## Endpoints Testés
 
-### ❌ LIST_NOTEBOOKS (wXbhsf)
-**Date du test :** [DATE]
-**Statut :** ❌ Non testé
+### ✅ LIST_NOTEBOOKS (wXbhsf)
+**Date du test :** 2026-02-09
+**Statut :** ✅ Validé
 **Request :**
 ```json
 {
-  "url": "https://...",
-  "method": "POST",
-  "headers": {},
-  "body": ""
+  "method": "wXbhsf",
+  "params": [null, null, null]
 }
 ```
-**Response :**
+**Response Structure :**
 ```json
-
+[
+  [
+    [
+      "Notebook Title",   // Index 0
+      [...],              // Index 1 (Sources?)
+      "NOTEBOOK_ID",      // Index 2
+      ...
+    ]
+  ]
+]
 ```
 **Notes :**
+- `result[0]` contains the array of notebooks.
+- Each notebook is an array.
+- Title is at index `0`.
+- ID is at index `2`.
 
 ### ❌ ADD_SOURCE (izAoDd) - URL
 **Date du test :** [DATE]
