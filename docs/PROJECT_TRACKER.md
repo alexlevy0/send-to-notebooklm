@@ -7,20 +7,20 @@ Extension Chrome freemium pour capturer du contenu web vers Google NotebookLM en
 
 ## 📈 Progression Globale
 
-- [ ] Sprint 1 : POC & Reverse Engineering (0%)
+- [x] Sprint 1 : POC & Reverse Engineering (100%)
 - [ ] Sprint 2 : MVP Extension (0%)
 - [ ] Sprint 3 : Backend Freemium (0%)
 - [ ] Sprint 4 : UI/UX Polish (0%)
 - [ ] Sprint 5 : Launch & Marketing (0%)
 
 ## 🔥 Sprint Actuel
-**Sprint 1 - POC**
-- Démarré : 2026-02-09
-- Statut : En cours
+**Sprint 2 - MVP Extension**
+- Démarré : [À DÉMARRER]
+- Statut : En attente
 - Bloqueurs : Aucun
 
 ## ✅ Achievements
-_Rien pour l'instant_
+- POC Auth & RPC validé (2026-02-09)
 
 ## 🐛 Bugs Connus
 _Aucun_
