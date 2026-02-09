@@ -20,7 +20,8 @@
     ],
     "paths": {
       "@/*": ["./*"]
-    }
+    },
+    "types": ["chrome", "node"]
   },
   "include": [
     "next-env.d.ts",

@@ -1,65 +1,207 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { Book, Check, ExternalLink, RefreshCw } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
+import { NotebookLM } from "@/lib/notebooklm/api";
+import type { Notebook } from "@/lib/notebooklm/types";
+
+export default function Popup() {
+  const [notebooks, setNotebooks] = useState<Notebook[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedNotebookId, setSelectedNotebookId] = useState<string | null>(null);
+  const [addingToNotebookId, setAddingToNotebookId] = useState<string | null>(null);
+  const [currentUrl, setCurrentUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof chrome !== "undefined" && chrome.tabs) {
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        if (tabs[0]?.url) {
+          setCurrentUrl(tabs[0].url);
+        }
+      });
+    } else {
+      // Dev mode fallback
+      setCurrentUrl("https://example.com");
+    }
+  }, []);
+
+  const fetchNotebooks = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const start = performance.now();
+      
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error("Request timed out (10s)")), 10000)
+      );
+
+      const nbs = await Promise.race([
+        NotebookLM.listNotebooks(),
+        timeoutPromise
+      ]) as Notebook[];
+
+      console.log(
+        `Fetched ${nbs.length} notebooks in ${performance.now() - start}ms`,
+      );
+      setNotebooks(nbs);
+    } catch (err: any) {
+      console.error("Failed to fetch notebooks:", err);
+      setError(err.message || "Failed to load notebooks");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchNotebooks();
+  }, []);
+
+  const handleNotebookSelect = async (id: string) => {
+    if (addingToNotebookId) return; // Prevent double click
+    
+    setSelectedNotebookId(id);
+    
+    if (!currentUrl) {
+      setError("No URL found to add.");
+      return;
+    }
+
+    setAddingToNotebookId(id);
+    try {
+      console.log(`Adding ${currentUrl} to notebook ${id}...`);
+      await NotebookLM.addUrlSource(id, currentUrl);
+      // Show success (maybe navigate to success view or just toast?)
+      // For now, simple alert or log, and maybe close popup?
+      console.log("Success!");
+      // window.close(); // Optional: close popup on success
+    } catch (err: any) {
+      console.error("Failed to add source:", err);
+      // setError(err.message || "Failed to add source");
+      // Don't replace the whole list with error, maybe just alert?
+      alert(`Failed to add source: ${err.message}`);
+    } finally {
+      setAddingToNotebookId(null);
+    }
+  };
+
+  const handleOpenNotebookLM = () => {
+    window.open("https://notebooklm.google.com", "_blank");
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="w-[650px] h-[500px] bg-background text-foreground flex flex-col font-sans">
+      <header className="p-4 border-b flex items-center justify-between bg-card">
+        <div className="flex items-center gap-2">
+          {/* Icon would go here */}
+          <h1 className="font-semibold text-lg">Send to NotebookLM</h1>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={fetchNotebooks}
+          disabled={loading}
+          title="Refresh"
+        >
+          <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
+        </Button>
+      </header>
+
+      <main className="flex-1 overflow-hidden flex flex-col p-4 gap-4">
+        {error ? (
+          <div className="flex flex-col items-center justify-center flex-1 text-center gap-4">
+            <div className="text-destructive font-medium">
+              Authentication Error
+            </div>
+            <p className="text-sm text-muted-foreground">{error}</p>
+            {error.includes("cookie") ? (
+              <Button onClick={handleOpenNotebookLM}>
+                Login to NotebookLM <ExternalLink className="ml-2 h-4 w-4" />
+              </Button>
+            ) : (
+              <Button onClick={fetchNotebooks}>Try Again</Button>
+            )}
+          </div>
+        ) : loading ? (
+          <div className="space-y-3">
+            <Skeleton className="h-[60px] w-full rounded-xl" />
+            <Skeleton className="h-[60px] w-full rounded-xl" />
+            <Skeleton className="h-[60px] w-full rounded-xl" />
+            <Skeleton className="h-[60px] w-full rounded-xl" />
+          </div>
+        ) : notebooks.length === 0 ? (
+          <div className="flex flex-col items-center justify-center flex-1 text-center gap-2">
+            <Book className="h-10 w-10 text-muted-foreground opacity-50" />
+            <p className="text-sm text-muted-foreground">No notebooks found.</p>
+            <Button variant="outline" size="sm" onClick={handleOpenNotebookLM}>
+              Create one <ExternalLink className="ml-2 h-4 w-4" />
+            </Button>
+          </div>
+        ) : (
+          <>
+            <div className="flex flex-col flex-1 min-h-0 gap-2">
+              <div className="flex items-center justify-between shrink-0">
+                <span className="text-sm font-medium text-muted-foreground">
+                  Select a notebook
+                </span>
+                <Badge variant="secondary">{notebooks.length} found</Badge>
+              </div>
+
+            <ScrollArea className="h-full w-full rounded-md border">
+                <div className="space-y-2 p-3 pr-4">
+                  {notebooks.map((nb) => (
+                    <Card
+                      key={nb.id}
+                      className={`cursor-pointer transition-all hover:bg-muted/50 mx-1 ${selectedNotebookId === nb.id ? "border-primary ring-1 ring-primary" : ""} ${addingToNotebookId === nb.id ? "opacity-70 pointer-events-none" : ""}`}
+                      onClick={() => handleNotebookSelect(nb.id)}
+                    >
+                      <div className="p-3 flex items-start gap-3">
+                        <div className="h-8 w-8 rounded bg-primary/10 flex items-center justify-center text-primary shrink-0 mt-0.5">
+                          {addingToNotebookId === nb.id ? (
+                             <RefreshCw className="h-4 w-4 animate-spin" />
+                          ) : (
+                             <Book className="h-4 w-4" />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="font-medium text-sm truncate">
+                            {nb.title}
+                          </div>
+                          <div className="text-xs text-muted-foreground truncate font-mono opacity-70">
+                            {nb.id.substring(0, 8)}...
+                          </div>
+                        </div>
+                        {selectedNotebookId === nb.id && addingToNotebookId !== nb.id && (
+                          <div className="text-primary shrink-0">
+                            <Check className="h-4 w-4" />
+                          </div>
+                        )}
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              </ScrollArea>
+            </div>
+          </>
+        )}
       </main>
+
+      <footer className="p-3 border-t bg-card text-center text-xs text-muted-foreground">
+        Version 0.1.0 • Unofficial Extension
+      </footer>
     </div>
   );
 }
