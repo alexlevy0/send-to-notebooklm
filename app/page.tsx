@@ -129,7 +129,13 @@ export default function Popup() {
 
     } catch (err: any) {
       console.error("Failed to add source:", err);
-      alert(`Failed to add source: ${err.message}`);
+      
+      if (err.name === 'LimitReachedError') {
+        setError("Daily limit reached ⚡");
+      } else {
+        // Show other errors in the UI too, instead of alert
+        setError(err.message || "Failed to add source");
+      }
     } finally {
       setAddingToNotebookId(null);
     }
@@ -161,7 +167,7 @@ export default function Popup() {
         {error ? (
           <div className="flex flex-col items-center justify-center flex-1 text-center gap-4">
             <div className="text-destructive font-medium">
-              Authentication Error
+              {error.includes("limit") ? "Limit Reached" : "Error"}
             </div>
             <p className="text-sm text-muted-foreground">{error}</p>
             {error.includes("cookie") ? (

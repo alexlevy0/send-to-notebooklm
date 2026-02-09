@@ -58,11 +58,21 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     } catch (error: any) {
       console.error('❌ Failed to send to NotebookLM:', error);
 
+      let title = 'Error';
+      let message = error.message || 'Failed to add text';
+
+      // Check for LimitReachedError
+      if (error.name === 'LimitReachedError') {
+        title = '⚡ Daily Limit Reached';
+        message = 'You have reached your daily limit. Upgrade to Pro for unlimited captures.';
+      }
+
       await chrome.notifications.create({
         type: 'basic',
         iconUrl: 'icons/icon-48.png',
-        title: 'Error',
-        message: error.message || 'Failed to add text',
+        title: title,
+        message: message,
+        buttons: error.name === 'LimitReachedError' ? [{ title: "Upgrade to Pro" }] : undefined
       });
     }
   }

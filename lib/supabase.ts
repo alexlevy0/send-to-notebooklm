@@ -9,6 +9,17 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
+export class LimitReachedError extends Error {
+  constructor(
+    public reason: 'daily_limit' | 'monthly_limit',
+    public resetAt: string,
+    public remaining: { daily: number; monthly: number }
+  ) {
+    super(`Limit reached: ${reason}`);
+    this.name = 'LimitReachedError';
+  }
+}
+
 export interface UsageInfo {
   allowed: boolean;
   isPro: boolean;
@@ -25,22 +36,41 @@ export interface UsageInfo {
   error?: string;
 }
 
-export async function checkLimit(): Promise<UsageInfo> {
+// Helper to ensure we have a user
+async function ensureAuth() {
   const { data: { session } } = await supabase.auth.getSession();
+  if (session) return session;
+
+  console.log('No session, attempting anonymous sign-in...');
+  const { data, error } = await supabase.auth.signInAnonymously();
   
-  if (!session) {
-    // If not logged in (to Supabase), we default to "Free" behavior tracking by IP/device? 
-    // Actually, for this MVP we might require Auth or just create anonymous user.
-    // For now, let's assume we need to be logged in, or we just rely on `check_limit` handling null auth (which it returns error for).
-    // Let's rely on RPC.
+  if (error) {
+    console.error('Anonymous sign-in failed:', error);
+    // Fallback: If anonymous auth is disabled, we might need real auth.
+    // For this MVP, we re-throw to block usage if we can't identify the user.
+    throw error;
+  }
+  
+  return data.session;
+}
+
+export async function checkLimit(): Promise<UsageInfo> {
+  try {
+    await ensureAuth();
+  } catch (e: any) {
+    return {
+      allowed: false,
+      isPro: false,
+      error: `Authentication failed: ${e.message}. Please enable Anonymous Sign-ins in Supabase.`
+    };
   }
 
   const { data, error } = await supabase.rpc('check_limit');
 
   if (error) {
     console.error('Error checking limit:', error);
-    // Fail safe: allow if error? Or block?
-    // Let's block to prevent abuse, but log.
+    // If it's a true limit reached (caught inside RPC? no, RPC returns JSON)
+    // If RPC failed (e.g. network), we block.
     return {
       allowed: false,
       isPro: false,
@@ -48,7 +78,9 @@ export async function checkLimit(): Promise<UsageInfo> {
     };
   }
 
-  return data as UsageInfo;
+  // Parse result explicitly
+  const result = data as UsageInfo;
+  return result;
 }
 
 export async function incrementUsage(): Promise<void> {

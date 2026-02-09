@@ -1,7 +1,8 @@
+import { checkLimit, incrementUsage, LimitReachedError } from "../supabase";
 import { getAuthTokens } from "./auth";
 import { NOTEBOOKLM_BASE_URL, RPCMethod } from "./constants";
 import { rpcCall } from "./rpc";
-import type { Notebook, ListNotebooksResponseItem } from "./types";
+import type { ListNotebooksResponseItem, Notebook } from "./types";
 
 export const NotebookLM = {
   async listNotebooks(): Promise<Notebook[]> {
@@ -11,7 +12,12 @@ export const NotebookLM = {
     // Trying [null, 20] to see if it fetches more.
     const params = [null, 50];
 
-    const response = await rpcCall(RPCMethod.LIST_NOTEBOOKS, params, auth, "notebooks");
+    const response = await rpcCall(
+      RPCMethod.LIST_NOTEBOOKS,
+      params,
+      auth,
+      "notebooks",
+    );
 
     // Response structure (from POC):
     // [ [ [Title, ..., ID], ... ] ]
@@ -41,32 +47,46 @@ export const NotebookLM = {
   },
 
   async addUrlSource(notebookId: string, url: string): Promise<boolean> {
+    // 1. Check Limits
+    const limitCheck = await checkLimit();
+    if (!limitCheck.allowed) {
+      throw new LimitReachedError(
+        limitCheck.reason!,
+        limitCheck.resetAt!,
+        limitCheck.remaining! || { daily: 0, monthly: 0 }
+      );
+    }
+
     const auth = await getAuthTokens();
 
     // Payload structure found in notebooklm-kit:
     // [ [ [ null, null, ["URL"], null, null, null, null, null, null, null, 1 ] ], "NOTEBOOK_ID" ]
-    
+
     const payload = [
       [
         [
-          null, 
-          null, 
-          [url], 
-          null, 
-          null, 
-          null, 
-          null, 
-          null, 
-          null, 
-          null, 
-          1 // 1 = URL source type
-        ]
+          null,
+          null,
+          [url],
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          1, // 1 = URL source type
+        ],
       ],
-      notebookId
+      notebookId,
     ];
 
     try {
       await rpcCall(RPCMethod.ADD_SOURCE, payload, auth, "notebooks");
+      
+      // 2. Increment Usage
+      await incrementUsage().catch(console.error); // Don't fail the user action if increment fails
+      
       return true;
     } catch (e) {
       console.error("Failed to add source:", e);
@@ -74,33 +94,45 @@ export const NotebookLM = {
     }
   },
 
-  async addTextSource(notebookId: string, title: string, content: string): Promise<boolean> {
+  async addTextSource(
+    notebookId: string,
+    title: string,
+    content: string,
+  ): Promise<boolean> {
+    // 1. Check Limits
+    const limitCheck = await checkLimit();
+    if (!limitCheck.allowed) {
+      throw new LimitReachedError(
+        limitCheck.reason!,
+        limitCheck.resetAt!,
+        limitCheck.remaining! || { daily: 0, monthly: 0 }
+      );
+    }
+
     const auth = await getAuthTokens();
 
     // Payload structure for text source (Type 2):
     // [ [ [ null, [title, content], null, null, null, null, null, null ] ], "NOTEBOOK_ID", [2], null, null ]
-    
+
     const payload = [
-      [
-        [
-          null, 
-          [title, content], 
-          null, 
-          null, 
-          null, 
-          null, 
-          null, 
-          null
-        ]
-      ],
+      [[null, [title, content], null, null, null, null, null, null]],
       notebookId,
       [2], // Source type flag for Text
-      null, 
-      null
+      null,
+      null,
     ];
 
     try {
-      await rpcCall(RPCMethod.ADD_SOURCE, payload, auth, `notebook/${notebookId}`);
+      await rpcCall(
+        RPCMethod.ADD_SOURCE,
+        payload,
+        auth,
+        `notebook/${notebookId}`,
+      );
+      
+      // 2. Increment Usage
+      await incrementUsage().catch(console.error);
+      
       return true;
     } catch (e) {
       console.error("Failed to add text source:", e);
