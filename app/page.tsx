@@ -1,249 +1,179 @@
-"use client";
-
-import { Book, Check, ExternalLink, RefreshCw } from "lucide-react";
-import { useEffect, useState } from "react";
-import { Badge } from "@/components/ui/badge";
+import { Check } from "lucide-react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
-import { NotebookLM } from "@/lib/notebooklm/api";
-import type { Notebook } from "@/lib/notebooklm/types";
 
-export default function Popup() {
-  const [notebooks, setNotebooks] = useState<Notebook[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [selectedNotebookId, setSelectedNotebookId] = useState<string | null>(null);
-  const [addingToNotebookId, setAddingToNotebookId] = useState<string | null>(null);
-  const [currentUrl, setCurrentUrl] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (typeof chrome !== "undefined" && chrome.tabs) {
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        if (tabs[0]?.url) {
-          setCurrentUrl(tabs[0].url);
-        }
-      });
-    } else {
-      // Dev mode fallback
-      setCurrentUrl("https://example.com");
-    }
-  }, []);
-
-  const fetchNotebooks = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const start = performance.now();
-      
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error("Request timed out (10s)")), 10000)
-      );
-
-      const nbs = await Promise.race([
-        NotebookLM.listNotebooks(),
-        timeoutPromise
-      ]) as Notebook[];
-
-      console.log(
-        `Fetched ${nbs.length} notebooks in ${performance.now() - start}ms`,
-      );
-      setNotebooks(nbs);
-    } catch (err: any) {
-      console.error("Failed to fetch notebooks:", err);
-      setError(err.message || "Failed to load notebooks");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchNotebooks();
-  }, []);
-
-  // Restore last selected notebook from storage
-  useEffect(() => {
-    if (notebooks.length === 0 || typeof chrome === "undefined" || !chrome.storage) return;
-
-    chrome.storage.local.get("lastNotebook", (result) => {
-      if (result.lastNotebook && result.lastNotebook.id) {
-        const found = notebooks.find((nb) => nb.id === result.lastNotebook.id);
-        if (found) {
-          setSelectedNotebookId(found.id);
-          console.log("Restored last notebook:", found.title);
-        }
-      }
-    });
-  }, [notebooks]);
-
-  const handleNotebookSelect = async (notebook: Notebook) => {
-    if (addingToNotebookId) return;
-    
-    // Save to storage
-    if (typeof chrome !== "undefined" && chrome.storage) {
-      chrome.storage.local.set({
-        lastNotebook: {
-          id: notebook.id,
-          title: notebook.title,
-        },
-      });
-    }
-
-    setSelectedNotebookId(notebook.id);
-    
-    if (!currentUrl) {
-      setError("No URL found to add.");
-      return;
-    }
-
-    setAddingToNotebookId(notebook.id);
-    try {
-      console.log(`Adding ${currentUrl} to notebook ${notebook.id}...`);
-      await NotebookLM.addUrlSource(notebook.id, currentUrl);
-      
-      // Success Notification
-      if (typeof chrome !== "undefined" && chrome.notifications) {
-        chrome.notifications.create({
-          type: "basic",
-          iconUrl: "icons/icon-48.png",
-          title: "Captured!",
-          message: `Page added to "${notebook.title}"`,
-        });
-      }
-
-      console.log("Success!");
-      
-      // Close popup after delay
-      setTimeout(() => {
-        window.close();
-      }, 1500);
-
-    } catch (err: any) {
-      console.error("Failed to add source:", err);
-      
-      if (err.name === 'LimitReachedError') {
-        setError("Daily limit reached ⚡");
-      } else {
-        // Show other errors in the UI too, instead of alert
-        setError(err.message || "Failed to add source");
-      }
-    } finally {
-      setAddingToNotebookId(null);
-    }
-  };
-
-  const handleOpenNotebookLM = () => {
-    window.open("https://notebooklm.google.com", "_blank");
-  };
-
+export default function LandingPage() {
   return (
-    <div className="w-[650px] h-[500px] bg-background text-foreground flex flex-col font-sans">
-      <header className="p-4 border-b flex items-center justify-between bg-card">
-        <div className="flex items-center gap-2">
-          {/* Icon would go here */}
-          <h1 className="font-semibold text-lg">Send to NotebookLM</h1>
+    <div className="flex flex-col min-h-screen bg-white text-neutral-900 font-sans selection:bg-indigo-100 selection:text-indigo-900">
+      {/* Navbar */}
+      <header className="px-6 py-4 flex items-center justify-between border-b border-neutral-200">
+        <div className="flex items-center gap-2 font-bold text-xl tracking-tighter">
+          <div className="size-8 rounded-lg bg-gradient-to-br from-indigo-600 to-purple-600 shadow-sm text-white flex items-center justify-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="lucide lucide-notebook-pen"
+            >
+              <path d="M13.4 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7.4" />
+              <path d="M2 6h4" />
+              <path d="M2 10h4" />
+              <path d="M2 14h4" />
+              <path d="M2 18h4" />
+              <path d="M18.4 2.6a2.1 2.1 0 1 1 3 3L11 16l-4 1 1-4Z" />
+            </svg>
+          </div>
+          <span>Send to NotebookLM</span>
         </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={fetchNotebooks}
-          disabled={loading}
-          title="Refresh"
-        >
-          <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
-        </Button>
+        <nav className="flex gap-4">
+          <Button
+            variant="ghost"
+            className="text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900"
+            asChild
+          >
+            <Link
+              href="https://github.com/alexlevy0/send-to-notebooklm"
+              target="_blank"
+            >
+              GitHub
+            </Link>
+          </Button>
+        </nav>
       </header>
 
-      <main className="flex-1 overflow-hidden flex flex-col p-4 gap-4">
-        {error ? (
-          <div className="flex flex-col items-center justify-center flex-1 text-center gap-4">
-            <div className="text-destructive font-medium">
-              {error.includes("limit") ? "Limit Reached" : "Error"}
-            </div>
-            <p className="text-sm text-muted-foreground">{error}</p>
-            {error.includes("cookie") ? (
-              <Button onClick={handleOpenNotebookLM}>
-                Login to NotebookLM <ExternalLink className="ml-2 h-4 w-4" />
-              </Button>
-            ) : (
-              <Button onClick={fetchNotebooks}>Try Again</Button>
-            )}
-          </div>
-        ) : loading ? (
-          <div className="space-y-3">
-            <Skeleton className="h-[60px] w-full rounded-xl" />
-            <Skeleton className="h-[60px] w-full rounded-xl" />
-            <Skeleton className="h-[60px] w-full rounded-xl" />
-            <Skeleton className="h-[60px] w-full rounded-xl" />
-          </div>
-        ) : notebooks.length === 0 ? (
-          <div className="flex flex-col items-center justify-center flex-1 text-center gap-2">
-            <Book className="h-10 w-10 text-muted-foreground opacity-50" />
-            <p className="text-sm text-muted-foreground">No notebooks found.</p>
-            <Button variant="outline" size="sm" onClick={handleOpenNotebookLM}>
-              Create one <ExternalLink className="ml-2 h-4 w-4" />
+      <main className="flex-1">
+        {/* Hero Section */}
+        <section className="relative px-6 py-24 md:py-32 flex flex-col items-center text-center max-w-4xl mx-auto space-y-8">
+          {/* Background Gradient */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-50 rounded-full blur-[100px] -z-10 pointer-events-none" />
+
+          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-neutral-900">
+            Your Research. <br />
+            <span className="text-indigo-600">Instantly.</span>
+          </h1>
+          <p className="text-lg md:text-xl text-neutral-600 max-w-2xl leading-relaxed">
+            Stop copy-pasting. Send entire articles, PDFs, and web pages
+            directly to Google NotebookLM with a single click. Optimize your
+            research workflow today.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 pt-4">
+            <Button
+              size="lg"
+              className="bg-neutral-900 text-white hover:bg-neutral-800 h-12 px-8 text-base font-semibold shadow-xl shadow-indigo-500/10"
+            >
+              Add to Chrome
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              className="border-neutral-200 text-neutral-800 hover:bg-neutral-50 h-12 px-8 text-base"
+            >
+              View Demo
             </Button>
           </div>
-        ) : (
-          <>
-            <div className="flex flex-col flex-1 min-h-0 gap-2">
-              <div className="flex items-center justify-between shrink-0">
-                <span className="text-sm font-medium text-muted-foreground">
-                  Select a notebook
-                </span>
-                <Badge variant="secondary">{notebooks.length} found</Badge>
+        </section>
+
+        {/* Pricing Section */}
+        <section
+          id="pricing"
+          className="px-6 py-24 border-t border-neutral-200 bg-neutral-50/50"
+        >
+          <div className="max-w-5xl mx-auto space-y-16">
+            <div className="text-center space-y-4">
+              <h2 className="text-3xl md:text-4xl font-bold text-neutral-900">
+                Simple, transparent pricing
+              </h2>
+              <p className="text-neutral-600">
+                Choose the plan that fits your research needs.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+              {/* Free Plan */}
+              <div className="rounded-2xl border border-neutral-200 bg-white p-8 space-y-6 flex flex-col shadow-sm">
+                <div className="space-y-2">
+                  <h3 className="text-2xl font-bold text-neutral-900">Free</h3>
+                  <div className="text-4xl font-extrabold text-neutral-900">
+                    0€{" "}
+                    <span className="text-base font-normal text-neutral-500">
+                      /mo
+                    </span>
+                  </div>
+                  <p className="text-neutral-500">
+                    Perfect for casual researchers.
+                  </p>
+                </div>
+                <div className="flex-1 space-y-4">
+                  <li className="flex gap-3 text-sm text-neutral-600">
+                    <Check className="size-5 text-indigo-600" />
+                    <span>10 captures per day</span>
+                  </li>
+                  <li className="flex gap-3 text-sm text-neutral-600">
+                    <Check className="size-5 text-indigo-600" />
+                    <span>Basic support</span>
+                  </li>
+                </div>
+                <Button
+                  variant="outline"
+                  className="w-full border-neutral-200 bg-neutral-50 text-neutral-400 hover:bg-neutral-50 cursor-not-allowed"
+                  disabled
+                >
+                  Current Plan
+                </Button>
               </div>
 
-            <ScrollArea className="h-full w-full rounded-md border">
-                <div className="space-y-2 p-3 pr-4">
-                  {notebooks.map((nb) => (
-                    <Card
-                      key={nb.id}
-                      className={`cursor-pointer transition-all hover:bg-muted/50 mx-1 ${selectedNotebookId === nb.id ? "border-primary ring-1 ring-primary" : ""} ${addingToNotebookId === nb.id ? "opacity-70 pointer-events-none" : ""}`}
-                      onClick={() => handleNotebookSelect(nb)}
-                    >
-                      <div className="p-3 flex items-start gap-3">
-                        <div className="h-8 w-8 rounded bg-primary/10 flex items-center justify-center text-primary shrink-0 mt-0.5">
-                          {addingToNotebookId === nb.id ? (
-                             <RefreshCw className="h-4 w-4 animate-spin" />
-                          ) : (
-                             <Book className="h-4 w-4" />
-                          )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="font-medium text-sm truncate">
-                            {nb.title}
-                          </div>
-                          <div className="text-xs text-muted-foreground truncate font-mono opacity-70">
-                            {nb.id.substring(0, 8)}...
-                          </div>
-                        </div>
-                        {selectedNotebookId === nb.id && addingToNotebookId !== nb.id && (
-                          <div className="text-primary shrink-0">
-                            <Check className="h-4 w-4" />
-                          </div>
-                        )}
-                      </div>
-                    </Card>
-                  ))}
+              {/* Pro Plan */}
+              <div className="relative rounded-2xl border border-indigo-200 bg-white p-8 space-y-6 flex flex-col shadow-2xl shadow-indigo-500/10">
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">
+                  Popular
                 </div>
-              </ScrollArea>
+                <div className="space-y-2">
+                  <h3 className="text-2xl font-bold text-indigo-600">Pro</h3>
+                  <div className="text-4xl font-extrabold text-neutral-900">
+                    3€{" "}
+                    <span className="text-base font-normal text-neutral-500">
+                      /mo
+                    </span>
+                  </div>
+                  <p className="text-neutral-500">
+                    For power users and researchers.
+                  </p>
+                </div>
+                <div className="flex-1 space-y-4">
+                  <li className="flex gap-3 text-sm text-neutral-700">
+                    <Check className="size-5 text-indigo-600" />
+                    <span>Unlimited captures</span>
+                  </li>
+                  <li className="flex gap-3 text-sm text-neutral-700">
+                    <Check className="size-5 text-indigo-600" />
+                    <span>Priority support</span>
+                  </li>
+                  <li className="flex gap-3 text-sm text-neutral-700">
+                    <Check className="size-5 text-indigo-600" />
+                    <span>Early access to new features</span>
+                  </li>
+                </div>
+                <Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/20">
+                  Upgrade to Pro
+                </Button>
+              </div>
             </div>
-          </>
-        )}
+          </div>
+        </section>
       </main>
 
-      <footer className="p-3 border-t bg-card text-center text-xs text-muted-foreground">
-        Version 0.1.0 • Unofficial Extension
+      {/* Footer */}
+      <footer className="px-6 py-12 border-t border-neutral-200 text-center text-neutral-500 text-sm bg-neutral-50">
+        <p>
+          &copy; {new Date().getFullYear()} Send to NotebookLM. All rights
+          reserved.
+        </p>
       </footer>
     </div>
   );

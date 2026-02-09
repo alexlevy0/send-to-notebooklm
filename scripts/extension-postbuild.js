@@ -14,10 +14,16 @@ if (fs.existsSync(NEXT_DIR)) {
   console.warn('_next directory not found in dist. Maybe build failed or already renamed?');
 }
 
-// 2. Update reference in index.html and extract inline scripts (CSP fix)
-if (fs.existsSync(HTML_FILE)) {
-  console.log('Processing index.html...');
-  let html = fs.readFileSync(HTML_FILE, 'utf8');
+// 2. Update reference in popup.html and extract inline scripts (CSP fix)
+// When built with Next.js App Router:
+// - `app/page.tsx` -> `index.html` (Landing Page)
+// - `app/popup/page.tsx` -> `popup.html` (Extension Popup)
+
+const POPUP_FILE = path.join(DIST_DIR, 'popup.html');
+
+if (fs.existsSync(POPUP_FILE)) {
+  console.log('Processing popup.html...');
+  let html = fs.readFileSync(POPUP_FILE, 'utf8');
   
   // Inject Global Error Handler at the top of <head>
   const errorHandlerScript = `
@@ -85,9 +91,9 @@ if (fs.existsSync(HTML_FILE)) {
     html = html.replace('</body>', '<script src="/init.js"></script></body>');
   }
 
-  fs.writeFileSync(HTML_FILE, html);
+  fs.writeFileSync(POPUP_FILE, html);
 } else {
-  console.warn('index.html not found in dist.');
+  console.warn('popup.html not found in dist. (Make sure app/popup/page.tsx exists)');
 }
 
 // 3. Replace /_next/ with /next/ in all Javascript files
