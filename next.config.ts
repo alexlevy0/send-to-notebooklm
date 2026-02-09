@@ -1,8 +1,10 @@
 import type { NextConfig } from "next";
 
+const isExtensionBuild = process.env.EXT_BUILD === 'true';
+
 const nextConfig: NextConfig = {
-  output: 'export',
-  distDir: 'dist',
+  output: isExtensionBuild ? 'export' : undefined,
+  distDir: isExtensionBuild ? 'dist' : '.next',
   images: {
     unoptimized: true,
   },
