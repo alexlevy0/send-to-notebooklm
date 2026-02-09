@@ -70,28 +70,65 @@ export default function Popup() {
     fetchNotebooks();
   }, []);
 
-  const handleNotebookSelect = async (id: string) => {
-    if (addingToNotebookId) return; // Prevent double click
+  // Restore last selected notebook from storage
+  useEffect(() => {
+    if (notebooks.length === 0 || typeof chrome === "undefined" || !chrome.storage) return;
+
+    chrome.storage.local.get("lastNotebook", (result) => {
+      if (result.lastNotebook && result.lastNotebook.id) {
+        const found = notebooks.find((nb) => nb.id === result.lastNotebook.id);
+        if (found) {
+          setSelectedNotebookId(found.id);
+          console.log("Restored last notebook:", found.title);
+        }
+      }
+    });
+  }, [notebooks]);
+
+  const handleNotebookSelect = async (notebook: Notebook) => {
+    if (addingToNotebookId) return;
     
-    setSelectedNotebookId(id);
+    // Save to storage
+    if (typeof chrome !== "undefined" && chrome.storage) {
+      chrome.storage.local.set({
+        lastNotebook: {
+          id: notebook.id,
+          title: notebook.title,
+        },
+      });
+    }
+
+    setSelectedNotebookId(notebook.id);
     
     if (!currentUrl) {
       setError("No URL found to add.");
       return;
     }
 
-    setAddingToNotebookId(id);
+    setAddingToNotebookId(notebook.id);
     try {
-      console.log(`Adding ${currentUrl} to notebook ${id}...`);
-      await NotebookLM.addUrlSource(id, currentUrl);
-      // Show success (maybe navigate to success view or just toast?)
-      // For now, simple alert or log, and maybe close popup?
+      console.log(`Adding ${currentUrl} to notebook ${notebook.id}...`);
+      await NotebookLM.addUrlSource(notebook.id, currentUrl);
+      
+      // Success Notification
+      if (typeof chrome !== "undefined" && chrome.notifications) {
+        chrome.notifications.create({
+          type: "basic",
+          iconUrl: "icons/icon-48.png",
+          title: "Captured!",
+          message: `Page added to "${notebook.title}"`,
+        });
+      }
+
       console.log("Success!");
-      // window.close(); // Optional: close popup on success
+      
+      // Close popup after delay
+      setTimeout(() => {
+        window.close();
+      }, 1500);
+
     } catch (err: any) {
       console.error("Failed to add source:", err);
-      // setError(err.message || "Failed to add source");
-      // Don't replace the whole list with error, maybe just alert?
       alert(`Failed to add source: ${err.message}`);
     } finally {
       setAddingToNotebookId(null);
@@ -166,7 +203,7 @@ export default function Popup() {
                     <Card
                       key={nb.id}
                       className={`cursor-pointer transition-all hover:bg-muted/50 mx-1 ${selectedNotebookId === nb.id ? "border-primary ring-1 ring-primary" : ""} ${addingToNotebookId === nb.id ? "opacity-70 pointer-events-none" : ""}`}
-                      onClick={() => handleNotebookSelect(nb.id)}
+                      onClick={() => handleNotebookSelect(nb)}
                     >
                       <div className="p-3 flex items-start gap-3">
                         <div className="h-8 w-8 rounded bg-primary/10 flex items-center justify-center text-primary shrink-0 mt-0.5">

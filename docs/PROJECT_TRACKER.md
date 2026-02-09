@@ -20,7 +20,9 @@ Extension Chrome freemium pour capturer du contenu web vers Google NotebookLM en
 - Bloqueurs : Aucun
 
 ## ✅ Achievements
-- MVP Extension fonctionnel (2026-02-09)
+- MVP Extension 100% fonctionnel (2026-02-09)
+- Menu contextuel opérationnel (2026-02-09)
+- Icons & Polish complet (2026-02-09)
 - POC Auth & RPC validé (2026-02-09)
 
 ## 🐛 Bugs Connus

@@ -5,7 +5,10 @@
   "description": "Capture web pages to Google NotebookLM",
   "permissions": [
     "cookies",
-    "activeTab"
+    "activeTab",
+    "contextMenus",
+    "storage",
+    "notifications"
   ],
   "host_permissions": [
     "https://notebooklm.google.com/*",

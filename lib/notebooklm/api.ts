@@ -73,4 +73,38 @@ export const NotebookLM = {
       throw e;
     }
   },
+
+  async addTextSource(notebookId: string, title: string, content: string): Promise<boolean> {
+    const auth = await getAuthTokens();
+
+    // Payload structure for text source (Type 2):
+    // [ [ [ null, [title, content], null, null, null, null, null, null ] ], "NOTEBOOK_ID", [2], null, null ]
+    
+    const payload = [
+      [
+        [
+          null, 
+          [title, content], 
+          null, 
+          null, 
+          null, 
+          null, 
+          null, 
+          null
+        ]
+      ],
+      notebookId,
+      [2], // Source type flag for Text
+      null, 
+      null
+    ];
+
+    try {
+      await rpcCall(RPCMethod.ADD_SOURCE, payload, auth, `notebook/${notebookId}`);
+      return true;
+    } catch (e) {
+      console.error("Failed to add text source:", e);
+      throw e;
+    }
+  },
 };

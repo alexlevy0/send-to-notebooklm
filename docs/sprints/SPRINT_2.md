@@ -1,12 +1,12 @@
 # Sprint 2 Checklist
 
-- [ ] Setup Next.js dans l'Extension
-- [ ] Components shadcn/ui
-- [ ] API Client Complet
-- [ ] UI Popup Principal
-- [ ] Fonctionnalité Capture Page
-- [ ] Fonctionnalité Sélection de Notebooks
-- [ ] Menu Contextuel (Right-Click)
-- [ ] Gestion d'Erreurs
-- [ ] Tests Manuels
-- [ ] Documentation
+- [x] Setup Next.js dans l'Extension
+- [x] Components shadcn/ui
+- [x] API Client Complet (List & Add Source)
+- [x] UI Popup Principal (Responsive & Functional)
+- [x] Fonctionnalité Capture Page (URL Source)
+- [x] Fonctionnalité Sélection de Notebooks
+- [ ] Menu Contextuel (Right-Click) - *Reporté au Post-MVP*
+- [x] Gestion d'Erreurs (Timeouts & Feedback UI)
+- [x] Tests Manuels (Validé)
+- [x] Documentation
