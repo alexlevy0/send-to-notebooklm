@@ -159,8 +159,10 @@ export default function LandingPage() {
                     <span>Early access to new features</span>
                   </li>
                 </div>
-                <Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/20">
-                  Upgrade to Pro
+                <Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/20" asChild>
+                  <Link href="https://buy.stripe.com/test_28E28s8BcgZd2Td4Z6cfK00">
+                    Upgrade to Pro
+                  </Link>
                 </Button>
               </div>
             </div>
