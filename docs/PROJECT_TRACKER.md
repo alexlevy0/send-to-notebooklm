@@ -9,6 +9,7 @@ Extension Chrome freemium pour capturer du contenu web vers Google NotebookLM en
 
 - [x] Sprint 1 : POC & Reverse Engineering (100%)
 - [x] Sprint 2 : MVP Extension (100%)
+- [x] Sprint 2.6 : Refactoring & Tech Debt (100%)
 - [ ] Sprint 3 : Backend Freemium (0%)
 - [ ] Sprint 4 : UI/UX Polish (0%)
 - [ ] Sprint 5 : Launch & Marketing (0%)

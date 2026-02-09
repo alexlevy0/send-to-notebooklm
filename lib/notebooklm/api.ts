@@ -1,7 +1,7 @@
 import { getAuthTokens } from "./auth";
 import { NOTEBOOKLM_BASE_URL, RPCMethod } from "./constants";
 import { rpcCall } from "./rpc";
-import type { Notebook } from "./types";
+import type { Notebook, ListNotebooksResponseItem } from "./types";
 
 export const NotebookLM = {
   async listNotebooks(): Promise<Notebook[]> {
@@ -28,7 +28,7 @@ export const NotebookLM = {
     }
 
     const notebooks: Notebook[] = nbListRaw
-      .map((nb: any) => {
+      .map((nb: ListNotebooksResponseItem) => {
         // Index 0: Title
         // Index 2: ID
         const title = nb[0];
