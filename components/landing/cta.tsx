@@ -24,10 +24,9 @@ export function CTA() {
             Research Workflow?
           </span>
         </h2>
-        
-        <p className="text-lg text-neutral-600 max-w-xl mx-auto">
-            Join thousands of researchers who have switched to a faster, smarter way of working.
-        </p>
+        <p className="text-xl text-indigo-100 mb-8 max-w-2xl mx-auto">
+            Join the new way of researching. Faster, smarter, and directly connected to your AI notebook.
+          </p>
 
         <Button 
             size="lg" 

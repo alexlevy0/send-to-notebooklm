@@ -62,8 +62,8 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       // 3. Call NotebookLM API (using shared lib)
       await NotebookLM.addTextSource(lastNotebook.id, sourceTitle, selectedText);
 
-      // NOUVEAU : 5. Increment usage counter AFTER successful capture
-      await incrementUsage();
+      // 5. Increment usage counter is handled inside NotebookLM.addTextSource
+      // await incrementUsage();
 
       // 4. Success Notification
       await chrome.notifications.create({

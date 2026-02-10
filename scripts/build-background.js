@@ -24,7 +24,7 @@ try {
     entryPoints: [path.join(__dirname, '../lib/background.ts')],
     outfile: path.join(__dirname, '../public/background.js'),
     bundle: true,
-    minify: false, // Keep readable for now, set true for prod
+    minify: true, // Minify for productionuction
     platform: 'browser',
     target: ['chrome100'],
     // Service workers support ESM in newer Chrome, but iife is safer usually. Let's try iife for compatibility if needed, but 'esm' allows top level await if targeted correctly. Chrome extensions SW often needed to be separate files or bundled.

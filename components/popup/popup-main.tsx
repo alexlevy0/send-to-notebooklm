@@ -35,6 +35,11 @@ import { NotebookLM } from "@/lib/notebooklm/api";
 import type { Notebook } from "@/lib/notebooklm/types";
 import { checkLimit } from "@/lib/supabase"; // Import checkLimit for status
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useCallback } from "react";
+
+// TODO: Replace with your actual Stripe links from the Dashboard
+const STRIPE_PAYMENT_LINK = "https://buy.stripe.com/test_28E28s8BcgZd2Td4Z6cfK00";
+const STRIPE_CUSTOMER_PORTAL = "https://billing.stripe.com/p/login/test_28E28s8BcgZd2Td4Z6cfK00";
 
 export default function PopupMain() {
   const [notebooks, setNotebooks] = useState<Notebook[]>([]);
@@ -130,33 +135,8 @@ export default function PopupMain() {
     fetchUserStatus();
   }, []);
 
-  // Restore last selected notebook from storage
-  useEffect(() => {
-    const handleKeyboard = (e: KeyboardEvent) => {
-      // ESC ferme le popup
-      if (e.key === 'Escape') {
-        window.close();
-      }
-      
-      // Enter pour sélectionner
-      if (e.key === 'Enter' && selectedNotebookId) {
-        const found = notebooks.find(nb => nb.id === selectedNotebookId);
-        if (found) handleNotebookSelect(found);
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyboard);
-    return () => window.removeEventListener('keydown', handleKeyboard);
-  }, [selectedNotebookId, notebooks]);
-
-  // Restore last selected notebook logic REMOVED based on user feedback
-  /*
-  useEffect(() => {
-    ...
-  }, [notebooks]);
-  */
-
-  const handleNotebookSelect = async (notebook: Notebook) => {
+  // Wrap in useCallback to avoid stale closures in useEffect
+  const handleNotebookSelect = useCallback(async (notebook: Notebook) => {
     if (addingToNotebookId) return;
 
     // Save to storage
@@ -215,7 +195,35 @@ export default function PopupMain() {
     } finally {
       setAddingToNotebookId(null);
     }
-  };
+  }, [addingToNotebookId, currentUrl]);
+
+  // Restore last selected notebook from storage
+  useEffect(() => {
+    const handleKeyboard = (e: KeyboardEvent) => {
+      // ESC ferme le popup
+      if (e.key === 'Escape') {
+        window.close();
+      }
+      
+      // Enter pour sélectionner
+      if (e.key === 'Enter' && selectedNotebookId) {
+        const found = notebooks.find(nb => nb.id === selectedNotebookId);
+        if (found) handleNotebookSelect(found);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyboard);
+    return () => window.removeEventListener('keydown', handleKeyboard);
+  }, [selectedNotebookId, notebooks, handleNotebookSelect]);
+
+  // Restore last selected notebook logic REMOVED based on user feedback
+  /*
+  useEffect(() => {
+    ...
+  }, [notebooks]);
+  */
+
+
 
   const handleOpenNotebookLM = () => {
     window.open("https://notebooklm.google.com", "_blank");
@@ -265,14 +273,14 @@ export default function PopupMain() {
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
               {isPro ? (
-                 <DropdownMenuItem onClick={() => window.open("https://billing.stripe.com/p/login/test_28E28s8BcgZd2Td4Z6cfK00", "_blank")}>
+                 <DropdownMenuItem onClick={() => window.open(STRIPE_CUSTOMER_PORTAL, "_blank")}>
                     <CreditCard className="mr-2 h-4 w-4" /> Manage Subscription
                  </DropdownMenuItem>
               ) : (
                 <DropdownMenuItem 
                   className="text-indigo-600 focus:text-indigo-700 focus:bg-indigo-50" 
                   onClick={() => {
-                    const baseUrl = "https://buy.stripe.com/test_28E28s8BcgZd2Td4Z6cfK00";
+                    const baseUrl = STRIPE_PAYMENT_LINK;
                     const url = userId ? `${baseUrl}?client_reference_id=${userId}` : "https://send-to-notebooklm.com";
                     // If we have a direct Stripe link, use it. If not, go to landing page (but landing page is hard to pass ID unless we modify it)
                     // Let's use the direct Stripe link if we have the ID.
@@ -476,7 +484,7 @@ export default function PopupMain() {
             <Button 
               className="w-full bg-indigo-600 hover:bg-indigo-700 text-white h-12 text-lg font-semibold"
               onClick={() => {
-                const baseUrl = "https://buy.stripe.com/test_28E28s8BcgZd2Td4Z6cfK00";
+                const baseUrl = STRIPE_PAYMENT_LINK;
                 const stripeLink = userId ? `${baseUrl}?client_reference_id=${userId}` : baseUrl;
                 window.open(stripeLink, '_blank');
               }}

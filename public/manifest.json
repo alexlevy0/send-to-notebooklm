@@ -12,7 +12,7 @@
   ],
   "host_permissions": [
     "https://notebooklm.google.com/*",
-    "https://*.google.com/*"
+    "https://accounts.google.com/*"
   ],
   "action": {
     "default_popup": "popup.html",

@@ -63,7 +63,7 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: "YOUR_GOOGLE_VERIFICATION_CODE",
+    // google: "YOUR_GOOGLE_VERIFICATION_CODE", // Add when available in Search Console
   }
 };
 

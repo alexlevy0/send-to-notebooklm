@@ -69,9 +69,8 @@ export function Pricing() {
               <Button 
                 className="w-full mt-8 bg-neutral-100 text-neutral-900 hover:bg-neutral-200 border border-neutral-200" 
                 size="lg"
-                asChild
-              >
-                <a href="https://chromewebstore.google.com/detail/YOUR_REAL_EXTENSION_ID" target="_blank">
+                >
+                <a href="https://chromewebstore.google.com/search/Send%20to%20NotebookLM" target="_blank">
                   Get Started Free
                 </a>
               </Button>
@@ -134,7 +133,7 @@ export function Pricing() {
                 size="lg"
                 asChild
               >
-                <a href="https://buy.stripe.com/YOUR_REAL_PAYMENT_LINK" target="_blank">
+                <a href="https://buy.stripe.com/test_28E28s8BcgZd2Td4Z6cfK00" target="_blank">
                   Upgrade to Pro
                 </a>
               </Button>

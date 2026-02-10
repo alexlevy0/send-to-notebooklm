@@ -60,9 +60,8 @@ export function Hero() {
               transition={{ duration: 0.8, delay: 0.5 }}
               className="text-lg md:text-xl text-neutral-600 max-w-2xl leading-relaxed"
             >
-              Stop switching tabs. Send articles, PDFs, and insights directly to 
-              <span className="text-neutral-900 font-semibold"> Google NotebookLM </span> 
-              with a single click. The fastest way to build your second brain.
+              One click from any page to <span className="text-neutral-900 font-semibold">Google NotebookLM</span>.
+              The fastest way to build your second brain.
             </motion.p>
             
             <motion.div 
@@ -99,11 +98,11 @@ export function Hero() {
             >
                 <div className="flex items-center gap-2">
                     <Users className="h-4 w-4" />
-                    <span>100+ researchers</span>
+                    <span>Built for Researchers</span>
                 </div>
                 <div className="flex items-center gap-2">
-                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                    <span>5.0 on Chrome Store</span>
+                    <Star className="h-4 w-4 text-neutral-400" />
+                    <span>Free & Open Source</span>
                 </div>
             </motion.div>
           </div>
@@ -155,15 +154,17 @@ export function Hero() {
       <Dialog open={showDemoModal} onOpenChange={setShowDemoModal}>
         <DialogContent className="max-w-4xl p-0 overflow-hidden bg-black border-none">
           <DialogTitle className="sr-only">Demo Video</DialogTitle>
-          <div className="aspect-video bg-neutral-900 flex items-center justify-center">
-            {/* Placeholder for now - User can replace with YouTube embed */}
-            <iframe
-              src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
-              className="w-full h-full"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-          </div>
+            <div className="relative aspect-video rounded-lg overflow-hidden bg-white/5 border border-white/10 shadow-2xl flex items-center justify-center group">
+              {/* Fallback Image / Placeholder */}
+              <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 animate-pulse" />
+              <div className="text-center z-10">
+                 <div className="bg-white/10 p-4 rounded-full mb-4 inline-flex backdrop-blur-sm border border-white/20">
+                    <span className="text-4xl">🎥</span>
+                 </div>
+                 <p className="text-white/80 font-medium">Demo Video Placeholder</p>
+                 <p className="text-white/50 text-sm mt-1">(Replace with your actual demo)</p>
+              </div>
+            </div>
         </DialogContent>
       </Dialog>
 
