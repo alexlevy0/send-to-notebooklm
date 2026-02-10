@@ -267,7 +267,7 @@ export default function PopupMain() {
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
               {isPro ? (
-                 <DropdownMenuItem onClick={() => window.open("https://billing.stripe.com/p/login/YOUR_REAL_PORTAL_ID", "_blank")}>
+                 <DropdownMenuItem onClick={() => window.open("https://billing.stripe.com/p/login/test_28E28s8BcgZd2Td4Z6cfK00", "_blank")}>
                     <CreditCard className="mr-2 h-4 w-4" /> Manage Subscription
                  </DropdownMenuItem>
               ) : (
