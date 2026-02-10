@@ -49,12 +49,12 @@ export function Footer() {
           <div className="space-y-4">
             <h4 className="font-bold text-neutral-900">Legal</h4>
             <ul className="space-y-2">
-              {/* <li>
-                <Link href="#" className="hover:text-indigo-600">
-                  Privacy
+              <li>
+                <Link href="/privacy" className="hover:text-indigo-600">
+                  Privacy Policy
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link href="#" className="hover:text-indigo-600">
                   Terms
                 </Link>
