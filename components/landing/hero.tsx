@@ -76,7 +76,7 @@ export function Hero() {
                 className="h-14 px-8 rounded-full bg-neutral-900 text-white hover:bg-neutral-800 text-lg font-bold shadow-xl shadow-indigo-500/10 transition-all hover:scale-105"
                 asChild
               >
-                <Link href="https://chromewebstore.google.com/detail/send-to-notebooklm/..." target="_blank">
+                <Link href="https://chromewebstore.google.com/detail/YOUR_REAL_EXTENSION_ID" target="_blank">
                   Add to Chrome - It's Free
                 </Link>
               </Button>

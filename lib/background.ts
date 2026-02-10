@@ -1,4 +1,5 @@
 import { NotebookLM } from "./notebooklm/api";
+import { checkLimit, incrementUsage } from "./supabase";
 
 console.log('🚀 Background service worker loaded (TypeScript)');
 
@@ -36,6 +37,21 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
         return;
       }
 
+      // NOUVEAU : 2. Check limits BEFORE capture
+      const limitStatus = await checkLimit();
+      if (!limitStatus.allowed) {
+        await chrome.notifications.create({
+          type: 'basic',
+          iconUrl: 'icons/icon-48.png',
+          title: '⚡ Limit Reached',
+          message: limitStatus.reason === 'daily_limit' 
+            ? 'Daily limit reached (10 captures). Upgrade to Pro for unlimited captures.'
+            : 'Monthly limit reached (200 captures). Upgrade to Pro for unlimited captures.',
+          buttons: [{ title: "Upgrade to Pro" }]
+        });
+        return;
+      }
+
       console.log('Adding to notebook:', lastNotebook);
 
       // 2. Prepare data
@@ -45,6 +61,9 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 
       // 3. Call NotebookLM API (using shared lib)
       await NotebookLM.addTextSource(lastNotebook.id, sourceTitle, selectedText);
+
+      // NOUVEAU : 5. Increment usage counter AFTER successful capture
+      await incrementUsage();
 
       // 4. Success Notification
       await chrome.notifications.create({

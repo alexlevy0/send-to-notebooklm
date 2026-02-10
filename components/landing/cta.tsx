@@ -32,9 +32,12 @@ export function CTA() {
         <Button 
             size="lg" 
             className="h-16 px-10 rounded-full bg-neutral-900 text-white hover:bg-neutral-800 text-xl font-bold shadow-xl shadow-indigo-500/20 transition-all hover:scale-105"
+            asChild
         >
-            <Sparkles className="mr-2 size-5" />
-            Install Extension Now
+            <Link href="https://chromewebstore.google.com/detail/YOUR_REAL_EXTENSION_ID" target="_blank">
+                <Sparkles className="mr-2 size-5" />
+                Install Extension Now
+            </Link>
         </Button>
 
         <p className="text-neutral-600 text-sm">

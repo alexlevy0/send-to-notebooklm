@@ -1,6 +1,6 @@
 "use strict";
 (() => {
-  // node_modules/.pnpm/tslib@2.8.1/node_modules/tslib/tslib.es6.mjs
+  // node_modules/tslib/tslib.es6.mjs
   function __rest(s, e) {
     var t = {};
     for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
@@ -40,7 +40,7 @@
     });
   }
 
-  // node_modules/.pnpm/@supabase+functions-js@2.95.3/node_modules/@supabase/functions-js/dist/module/helper.js
+  // node_modules/@supabase/functions-js/dist/module/helper.js
   var resolveFetch = (customFetch) => {
     if (customFetch) {
       return (...args) => customFetch(...args);
@@ -48,7 +48,7 @@
     return (...args) => fetch(...args);
   };
 
-  // node_modules/.pnpm/@supabase+functions-js@2.95.3/node_modules/@supabase/functions-js/dist/module/types.js
+  // node_modules/@supabase/functions-js/dist/module/types.js
   var FunctionsError = class extends Error {
     constructor(message, name = "FunctionsError", context) {
       super(message);
@@ -90,7 +90,7 @@
     FunctionRegion2["UsWest2"] = "us-west-2";
   })(FunctionRegion || (FunctionRegion = {}));
 
-  // node_modules/.pnpm/@supabase+functions-js@2.95.3/node_modules/@supabase/functions-js/dist/module/FunctionsClient.js
+  // node_modules/@supabase/functions-js/dist/module/FunctionsClient.js
   var FunctionsClient = class {
     /**
      * Creates a new Functions client bound to an Edge Functions URL.
@@ -230,7 +230,7 @@
     }
   };
 
-  // node_modules/.pnpm/@supabase+postgrest-js@2.95.3/node_modules/@supabase/postgrest-js/dist/index.mjs
+  // node_modules/@supabase/postgrest-js/dist/index.mjs
   var PostgrestError = class extends Error {
     /**
     * @example
@@ -1542,7 +1542,7 @@ ${cause.stack}`;
     }
   };
 
-  // node_modules/.pnpm/@supabase+realtime-js@2.95.3/node_modules/@supabase/realtime-js/dist/module/lib/websocket-factory.js
+  // node_modules/@supabase/realtime-js/dist/module/lib/websocket-factory.js
   var WebSocketFactory = class {
     /**
      * Static-only utility – prevent instantiation.
@@ -1658,10 +1658,10 @@ Suggested solution: ${env.workaround}`;
   };
   var websocket_factory_default = WebSocketFactory;
 
-  // node_modules/.pnpm/@supabase+realtime-js@2.95.3/node_modules/@supabase/realtime-js/dist/module/lib/version.js
+  // node_modules/@supabase/realtime-js/dist/module/lib/version.js
   var version = "2.95.3";
 
-  // node_modules/.pnpm/@supabase+realtime-js@2.95.3/node_modules/@supabase/realtime-js/dist/module/lib/constants.js
+  // node_modules/@supabase/realtime-js/dist/module/lib/constants.js
   var DEFAULT_VERSION = `realtime-js/${version}`;
   var VSN_1_0_0 = "1.0.0";
   var VSN_2_0_0 = "2.0.0";
@@ -1705,7 +1705,7 @@ Suggested solution: ${env.workaround}`;
     CONNECTION_STATE2["Closed"] = "closed";
   })(CONNECTION_STATE || (CONNECTION_STATE = {}));
 
-  // node_modules/.pnpm/@supabase+realtime-js@2.95.3/node_modules/@supabase/realtime-js/dist/module/lib/serializer.js
+  // node_modules/@supabase/realtime-js/dist/module/lib/serializer.js
   var Serializer = class {
     constructor(allowedMetadataKeys) {
       this.HEADER_LENGTH = 1;
@@ -1845,7 +1845,7 @@ Suggested solution: ${env.workaround}`;
     }
   };
 
-  // node_modules/.pnpm/@supabase+realtime-js@2.95.3/node_modules/@supabase/realtime-js/dist/module/lib/timer.js
+  // node_modules/@supabase/realtime-js/dist/module/lib/timer.js
   var Timer = class {
     constructor(callback, timerCalc) {
       this.callback = callback;
@@ -1870,7 +1870,7 @@ Suggested solution: ${env.workaround}`;
     }
   };
 
-  // node_modules/.pnpm/@supabase+realtime-js@2.95.3/node_modules/@supabase/realtime-js/dist/module/lib/transformers.js
+  // node_modules/@supabase/realtime-js/dist/module/lib/transformers.js
   var PostgresTypes;
   (function(PostgresTypes2) {
     PostgresTypes2["abstime"] = "abstime";
@@ -2033,7 +2033,7 @@ Suggested solution: ${env.workaround}`;
     return wsUrl.href;
   };
 
-  // node_modules/.pnpm/@supabase+realtime-js@2.95.3/node_modules/@supabase/realtime-js/dist/module/lib/push.js
+  // node_modules/@supabase/realtime-js/dist/module/lib/push.js
   var Push = class {
     /**
      * Initializes the Push
@@ -2132,7 +2132,7 @@ Suggested solution: ${env.workaround}`;
     }
   };
 
-  // node_modules/.pnpm/@supabase+realtime-js@2.95.3/node_modules/@supabase/realtime-js/dist/module/RealtimePresence.js
+  // node_modules/@supabase/realtime-js/dist/module/RealtimePresence.js
   var REALTIME_PRESENCE_LISTEN_EVENTS;
   (function(REALTIME_PRESENCE_LISTEN_EVENTS2) {
     REALTIME_PRESENCE_LISTEN_EVENTS2["SYNC"] = "sync";
@@ -2364,7 +2364,7 @@ Suggested solution: ${env.workaround}`;
     }
   };
 
-  // node_modules/.pnpm/@supabase+realtime-js@2.95.3/node_modules/@supabase/realtime-js/dist/module/RealtimeChannel.js
+  // node_modules/@supabase/realtime-js/dist/module/RealtimeChannel.js
   var REALTIME_POSTGRES_CHANGES_LISTEN_EVENT;
   (function(REALTIME_POSTGRES_CHANGES_LISTEN_EVENT2) {
     REALTIME_POSTGRES_CHANGES_LISTEN_EVENT2["ALL"] = "*";
@@ -2960,7 +2960,7 @@ Suggested solution: ${env.workaround}`;
     }
   };
 
-  // node_modules/.pnpm/@supabase+realtime-js@2.95.3/node_modules/@supabase/realtime-js/dist/module/RealtimeClient.js
+  // node_modules/@supabase/realtime-js/dist/module/RealtimeClient.js
   var noop2 = () => {
   };
   var CONNECTION_TIMEOUTS = {
@@ -3721,7 +3721,7 @@ Option 2: Install and provide the "ws" package:
     }
   };
 
-  // node_modules/.pnpm/iceberg-js@0.8.1/node_modules/iceberg-js/dist/index.mjs
+  // node_modules/iceberg-js/dist/index.mjs
   var IcebergError = class extends Error {
     constructor(message, opts) {
       super(message);
@@ -4254,7 +4254,7 @@ Option 2: Install and provide the "ws" package:
     }
   };
 
-  // node_modules/.pnpm/@supabase+storage-js@2.95.3/node_modules/@supabase/storage-js/dist/index.mjs
+  // node_modules/@supabase/storage-js/dist/index.mjs
   var StorageError = class extends Error {
     constructor(message, namespace = "storage", status, statusCode) {
       super(message);
@@ -6595,10 +6595,10 @@ Option 2: Install and provide the "ws" package:
     }
   };
 
-  // node_modules/.pnpm/@supabase+auth-js@2.95.3/node_modules/@supabase/auth-js/dist/module/lib/version.js
+  // node_modules/@supabase/auth-js/dist/module/lib/version.js
   var version3 = "2.95.3";
 
-  // node_modules/.pnpm/@supabase+auth-js@2.95.3/node_modules/@supabase/auth-js/dist/module/lib/constants.js
+  // node_modules/@supabase/auth-js/dist/module/lib/constants.js
   var AUTO_REFRESH_TICK_DURATION_MS = 30 * 1e3;
   var AUTO_REFRESH_TICK_THRESHOLD = 3;
   var EXPIRY_MARGIN_MS = AUTO_REFRESH_TICK_THRESHOLD * AUTO_REFRESH_TICK_DURATION_MS;
@@ -6615,7 +6615,7 @@ Option 2: Install and provide the "ws" package:
   var BASE64URL_REGEX = /^([a-z0-9_-]{4})*($|[a-z0-9_-]{3}$|[a-z0-9_-]{2}$)$/i;
   var JWKS_TTL = 10 * 60 * 1e3;
 
-  // node_modules/.pnpm/@supabase+auth-js@2.95.3/node_modules/@supabase/auth-js/dist/module/lib/errors.js
+  // node_modules/@supabase/auth-js/dist/module/lib/errors.js
   var AuthError = class extends Error {
     constructor(message, status, code) {
       super(message);
@@ -6729,7 +6729,7 @@ Option 2: Install and provide the "ws" package:
     }
   };
 
-  // node_modules/.pnpm/@supabase+auth-js@2.95.3/node_modules/@supabase/auth-js/dist/module/lib/base64url.js
+  // node_modules/@supabase/auth-js/dist/module/lib/base64url.js
   var TO_BASE64URL = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_".split("");
   var IGNORE_BASE64URL = " 	\n\r=".split("");
   var FROM_BASE64URL = (() => {
@@ -6891,7 +6891,7 @@ Option 2: Install and provide the "ws" package:
     return result.join("");
   }
 
-  // node_modules/.pnpm/@supabase+auth-js@2.95.3/node_modules/@supabase/auth-js/dist/module/lib/helpers.js
+  // node_modules/@supabase/auth-js/dist/module/lib/helpers.js
   function expiresAt(expiresIn) {
     const timeNow = Math.round(Date.now() / 1e3);
     return timeNow + expiresIn;
@@ -7173,7 +7173,7 @@ Option 2: Install and provide the "ws" package:
     return JSON.parse(JSON.stringify(obj));
   }
 
-  // node_modules/.pnpm/@supabase+auth-js@2.95.3/node_modules/@supabase/auth-js/dist/module/lib/fetch.js
+  // node_modules/@supabase/auth-js/dist/module/lib/fetch.js
   var _getErrorMessage2 = (err) => err.msg || err.message || err.error_description || err.error || JSON.stringify(err);
   var NETWORK_ERROR_CODES = [502, 503, 504];
   async function handleError2(error) {
@@ -7310,10 +7310,10 @@ Option 2: Install and provide the "ws" package:
     return data.access_token && data.refresh_token && data.expires_in;
   }
 
-  // node_modules/.pnpm/@supabase+auth-js@2.95.3/node_modules/@supabase/auth-js/dist/module/lib/types.js
+  // node_modules/@supabase/auth-js/dist/module/lib/types.js
   var SIGN_OUT_SCOPES = ["global", "local", "others"];
 
-  // node_modules/.pnpm/@supabase+auth-js@2.95.3/node_modules/@supabase/auth-js/dist/module/GoTrueAdminApi.js
+  // node_modules/@supabase/auth-js/dist/module/GoTrueAdminApi.js
   var GoTrueAdminApi = class {
     /**
      * Creates an admin API client that can be used to manage users and OAuth clients.
@@ -7730,7 +7730,7 @@ Option 2: Install and provide the "ws" package:
     }
   };
 
-  // node_modules/.pnpm/@supabase+auth-js@2.95.3/node_modules/@supabase/auth-js/dist/module/lib/local-storage.js
+  // node_modules/@supabase/auth-js/dist/module/lib/local-storage.js
   function memoryLocalStorageAdapter(store = {}) {
     return {
       getItem: (key) => {
@@ -7745,7 +7745,7 @@ Option 2: Install and provide the "ws" package:
     };
   }
 
-  // node_modules/.pnpm/@supabase+auth-js@2.95.3/node_modules/@supabase/auth-js/dist/module/lib/locks.js
+  // node_modules/@supabase/auth-js/dist/module/lib/locks.js
   var internals = {
     /**
      * @experimental
@@ -7813,7 +7813,7 @@ Option 2: Install and provide the "ws" package:
     }));
   }
 
-  // node_modules/.pnpm/@supabase+auth-js@2.95.3/node_modules/@supabase/auth-js/dist/module/lib/polyfills.js
+  // node_modules/@supabase/auth-js/dist/module/lib/polyfills.js
   function polyfillGlobalThis() {
     if (typeof globalThis === "object")
       return;
@@ -7833,7 +7833,7 @@ Option 2: Install and provide the "ws" package:
     }
   }
 
-  // node_modules/.pnpm/@supabase+auth-js@2.95.3/node_modules/@supabase/auth-js/dist/module/lib/web3/ethereum.js
+  // node_modules/@supabase/auth-js/dist/module/lib/web3/ethereum.js
   function getAddress(address) {
     if (!/^0x[a-fA-F0-9]{40}$/.test(address)) {
       throw new Error(`@supabase/auth-js: Address "${address}" is invalid.`);
@@ -7901,7 +7901,7 @@ Request ID: ${requestId}`;
 ${suffix}`;
   }
 
-  // node_modules/.pnpm/@supabase+auth-js@2.95.3/node_modules/@supabase/auth-js/dist/module/lib/webauthn.errors.js
+  // node_modules/@supabase/auth-js/dist/module/lib/webauthn.errors.js
   var WebAuthnError = class extends Error {
     constructor({ message, code, cause, name }) {
       var _a;
@@ -8069,7 +8069,7 @@ ${suffix}`;
     });
   }
 
-  // node_modules/.pnpm/@supabase+auth-js@2.95.3/node_modules/@supabase/auth-js/dist/module/lib/webauthn.js
+  // node_modules/@supabase/auth-js/dist/module/lib/webauthn.js
   var WebAuthnAbortService = class {
     /**
      * Create an abort signal for a new WebAuthn operation.
@@ -8592,7 +8592,7 @@ ${suffix}`;
     }
   };
 
-  // node_modules/.pnpm/@supabase+auth-js@2.95.3/node_modules/@supabase/auth-js/dist/module/GoTrueClient.js
+  // node_modules/@supabase/auth-js/dist/module/GoTrueClient.js
   polyfillGlobalThis();
   var DEFAULT_OPTIONS = {
     url: GOTRUE_URL,
@@ -11144,11 +11144,11 @@ ${suffix}`;
   GoTrueClient.nextInstanceID = {};
   var GoTrueClient_default = GoTrueClient;
 
-  // node_modules/.pnpm/@supabase+auth-js@2.95.3/node_modules/@supabase/auth-js/dist/module/AuthClient.js
+  // node_modules/@supabase/auth-js/dist/module/AuthClient.js
   var AuthClient = GoTrueClient_default;
   var AuthClient_default = AuthClient;
 
-  // node_modules/.pnpm/@supabase+supabase-js@2.95.3/node_modules/@supabase/supabase-js/dist/index.mjs
+  // node_modules/@supabase/supabase-js/dist/index.mjs
   var version4 = "2.95.3";
   var JS_ENV = "";
   if (typeof Deno !== "undefined") JS_ENV = "deno";
@@ -11794,11 +11794,23 @@ ${suffix}`;
           });
           return;
         }
+        const limitStatus = await checkLimit();
+        if (!limitStatus.allowed) {
+          await chrome.notifications.create({
+            type: "basic",
+            iconUrl: "icons/icon-48.png",
+            title: "\u26A1 Limit Reached",
+            message: limitStatus.reason === "daily_limit" ? "Daily limit reached (10 captures). Upgrade to Pro for unlimited captures." : "Monthly limit reached (200 captures). Upgrade to Pro for unlimited captures.",
+            buttons: [{ title: "Upgrade to Pro" }]
+          });
+          return;
+        }
         console.log("Adding to notebook:", lastNotebook);
         const selectedText = info.selectionText || "";
         const pageTitle = tab?.title || "Untitled";
         const sourceTitle = `Selection from ${pageTitle}`;
         await NotebookLM.addTextSource(lastNotebook.id, sourceTitle, selectedText);
+        await incrementUsage();
         await chrome.notifications.create({
           type: "basic",
           iconUrl: "icons/icon-48.png",

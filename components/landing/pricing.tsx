@@ -71,7 +71,7 @@ export function Pricing() {
                 size="lg"
                 asChild
               >
-                <a href="https://chromewebstore.google.com/detail/send-to-notebooklm/..." target="_blank">
+                <a href="https://chromewebstore.google.com/detail/YOUR_REAL_EXTENSION_ID" target="_blank">
                   Get Started Free
                 </a>
               </Button>
@@ -134,7 +134,7 @@ export function Pricing() {
                 size="lg"
                 asChild
               >
-                <a href="https://buy.stripe.com/..." target="_blank">
+                <a href="https://buy.stripe.com/YOUR_REAL_PAYMENT_LINK" target="_blank">
                   Upgrade to Pro
                 </a>
               </Button>

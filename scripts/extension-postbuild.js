@@ -26,42 +26,19 @@ if (fs.existsSync(POPUP_FILE)) {
   let html = fs.readFileSync(POPUP_FILE, 'utf8');
   
   // Inject Global Error Handler at the top of <head>
+  // Inject Global Error Handler - DISABLED to prevent Hydration Mismatch
+  // React Hydration fails if we inject scripts into <head> that weren't there during SSR.
+  /*
   const errorHandlerScript = `
   <script>
-    window.addEventListener('error', function(event) {
-      const errorDiv = document.createElement('div');
-      errorDiv.style.position = 'fixed';
-      errorDiv.style.top = '0';
-      errorDiv.style.left = '0';
-      errorDiv.style.width = '100%';
-      errorDiv.style.backgroundColor = '#fee2e2'; // red-100
-      errorDiv.style.color = '#991b1b'; // red-800
-      errorDiv.style.padding = '8px';
-      errorDiv.style.zIndex = '99999';
-      errorDiv.style.fontSize = '12px';
-      errorDiv.style.borderBottom = '1px solid #ef4444';
-      errorDiv.innerText = 'JS Error: ' + event.message;
-      document.body.appendChild(errorDiv);
-    });
-    window.addEventListener('unhandledrejection', function(event) {
-      const errorDiv = document.createElement('div');
-      errorDiv.style.position = 'fixed';
-      errorDiv.style.top = '24px';
-      errorDiv.style.left = '0';
-      errorDiv.style.width = '100%';
-      errorDiv.style.backgroundColor = '#ffedd5'; // orange-100
-      errorDiv.style.color = '#9a3412'; // orange-800
-      errorDiv.style.padding = '8px';
-      errorDiv.style.zIndex = '99999';
-      errorDiv.style.fontSize = '12px';
-      errorDiv.style.borderBottom = '1px solid #f97316';
-      errorDiv.innerText = 'Promise Error: ' + (event.reason ? event.reason.message || event.reason : 'Unknown');
-      document.body.appendChild(errorDiv);
-    });
+    ...
   </script>
   `;
-  
   html = html.replace('<head>', '<head>' + errorHandlerScript);
+  */
+  
+  // We will NOT inject the error handler. 
+
   
   // Fix _next paths
   html = html.replace(/\/_next\//g, '/next/');

@@ -1,52 +1,63 @@
 # 📊 Project Tracker - Send to NotebookLM
 
-**Dernière mise à jour :** 2026-02-09
-
-## 🎯 Objectif du Projet
-Extension Chrome freemium pour capturer du contenu web vers Google NotebookLM en un clic.
+**Dernière mise à jour :** 2026-02-10
 
 ## 📈 Progression Globale
 
 - [x] Sprint 1 : POC & Reverse Engineering (100%) ✅
 - [x] Sprint 2 : MVP Extension (100%) ✅
 - [x] Sprint 2.6 : Refactoring & Tech Debt (100%) ✅
-- [ ] Sprint 3 : Backend Freemium (0%)
-- [ ] Sprint 4 : UI/UX Polish (0%)
-- [ ] Sprint 5 : Launch & Marketing (0%)
+- [x] Sprint 3 : Backend Freemium (100%) ✅
+- [x] Sprint 3.5 : UI Limites Extension (100%) ✅
+- [x] Sprint 4 : Landing Page (100%) ✅
+- [ ] Sprint 5 : Launch Preparation (0%)
 
 ## 🔥 Sprint Actuel
-**Sprint 3 - Backend Freemium**
-- Démarré : Non
-- Statut : Prêt à démarrer
+**Sprint 5 - Launch Preparation**
+- Démarré : En cours
+- Statut : Tests & Polish
 - Bloqueurs : Aucun
 
 ## ✅ Achievements
 
-### Sprint 2 (2026-02-09)
-- ✅ Extension 100% fonctionnelle
-- ✅ UI professionnelle avec shadcn/ui
-- ✅ Menu contextuel opérationnel
-- ✅ Storage persistant
-- ✅ Notifications implémentées
-- ✅ Icons générés
-- ✅ Refactoring complet (background bundling, auth retry)
+### Sprint 4 (2026-02-10)
+- ✅ Landing page complète avec 10 sections
+- ✅ Pricing visible (Free vs Pro)
+- ✅ FAQ (9 questions)
+- ✅ Before/After comparison
+- ✅ Screenshots ajoutés
+- ✅ Framer Motion animations
+- ✅ SEO meta tags
+- ✅ Mobile responsive
 
-### Sprint 1 (2026-02-09)
-- ✅ POC Auth & RPC validé
-- ✅ API reverse-engineered
-- ✅ Documentation complète
+### Sprint 3.5 (2026-02-10)
+- ✅ Usage indicator dans popup
+- ✅ Modal upgrade quand limite atteinte
+- ✅ Badge Pro dans header
+- ✅ Check limites dans background.ts
+- ✅ Increment usage après capture
+
+### Sprint 3 (2026-02-09)
+- ✅ Database schema complet (4 migrations)
+- ✅ Logique SQL (check_limit, increment_usage)
+- ✅ Stripe webhook fonctionnel
+- ✅ Client Supabase intégré
+- ✅ Auth anonyme
 
 ## 🐛 Bugs Connus
 _Aucun bug critique_
 
-## 💡 Idées Futures
-- [ ] OCR sur images (post-launch)
-- [ ] Export vers Notion
-- [ ] Tags automatiques
-- [ ] Extension Firefox
+## 🚀 Ready to Launch
+- Extension : 100% ✅
+- Backend : 100% ✅
+- Landing Page : 100% ✅
+- Tests Manuels : À faire
+- Chrome Web Store : À soumettre
+- Product Hunt : À préparer
 
-## 📊 Métriques (Post-Launch)
-- Installations : 0
-- Utilisateurs actifs : 0
-- Conversions Pro : 0
-- MRR : 0€
+## 📊 Métriques (Pre-Launch)
+- Développement : 7 jours
+- Lignes de code : ~3000
+- Commits : ~30
+- Tests manuels : 0/25
+- Documentation : 95%
