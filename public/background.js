@@ -11515,8 +11515,9 @@ ${suffix}`;
     return data.session;
   }
   async function checkLimit() {
+    let session;
     try {
-      await ensureAuth();
+      session = await ensureAuth();
     } catch (e) {
       return {
         allowed: false,
@@ -11528,13 +11529,15 @@ ${suffix}`;
     if (error) {
       console.error("Error checking limit:", error);
       return {
+        userId: session?.user?.id,
+        // Return ID even on error if possible
         allowed: false,
         isPro: false,
         error: error.message
       };
     }
     const result = data;
-    return result;
+    return { ...result, userId: session?.user?.id };
   }
   async function incrementUsage() {
     const { error } = await supabase.rpc("increment_capture_count");

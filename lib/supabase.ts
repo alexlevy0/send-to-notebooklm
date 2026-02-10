@@ -21,6 +21,7 @@ export class LimitReachedError extends Error {
 }
 
 export interface UsageInfo {
+  userId?: string; // Added userId
   allowed: boolean;
   isPro: boolean;
   remaining?: {
@@ -55,8 +56,9 @@ async function ensureAuth() {
 }
 
 export async function checkLimit(): Promise<UsageInfo> {
+  let session;
   try {
-    await ensureAuth();
+    session = await ensureAuth();
   } catch (e: any) {
     return {
       allowed: false,
@@ -69,9 +71,8 @@ export async function checkLimit(): Promise<UsageInfo> {
 
   if (error) {
     console.error('Error checking limit:', error);
-    // If it's a true limit reached (caught inside RPC? no, RPC returns JSON)
-    // If RPC failed (e.g. network), we block.
     return {
+      userId: session?.user?.id, // Return ID even on error if possible
       allowed: false,
       isPro: false,
       error: error.message
@@ -80,7 +81,7 @@ export async function checkLimit(): Promise<UsageInfo> {
 
   // Parse result explicitly
   const result = data as UsageInfo;
-  return result;
+  return { ...result, userId: session?.user?.id }; // Append userId
 }
 
 export async function incrementUsage(): Promise<void> {

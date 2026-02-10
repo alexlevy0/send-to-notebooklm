@@ -49,6 +49,7 @@ export default function Popup() {
   );
   const [currentUrl, setCurrentUrl] = useState<string | null>(null);
   const [isPro, setIsPro] = useState<boolean>(false);
+  const [userId, setUserId] = useState<string | null>(null);
   const [checkingStatus, setCheckingStatus] = useState(true);
 
   useEffect(() => {
@@ -98,6 +99,9 @@ export default function Popup() {
     try {
       const status = await checkLimit();
       setIsPro(status.isPro);
+      if (status.userId) {
+        setUserId(status.userId);
+      }
     } catch (e) {
       console.error("Failed to check status:", e);
     } finally {
@@ -237,7 +241,16 @@ export default function Popup() {
                     <CreditCard className="mr-2 h-4 w-4" /> Manage Subscription
                  </DropdownMenuItem>
               ) : (
-                <DropdownMenuItem className="text-indigo-600 focus:text-indigo-700 focus:bg-indigo-50" onClick={() => window.open("https://send-to-notebooklm.com", "_blank")}>
+                <DropdownMenuItem 
+                  className="text-indigo-600 focus:text-indigo-700 focus:bg-indigo-50" 
+                  onClick={() => {
+                    const baseUrl = "https://buy.stripe.com/test_28E28s8BcgZd2Td4Z6cfK00";
+                    const url = userId ? `${baseUrl}?client_reference_id=${userId}` : "https://send-to-notebooklm.com";
+                    // If we have a direct Stripe link, use it. If not, go to landing page (but landing page is hard to pass ID unless we modify it)
+                    // Let's use the direct Stripe link if we have the ID.
+                    window.open(url, "_blank");
+                  }}
+                >
                    <Sparkles className="mr-2 h-4 w-4" /> Upgrade to Pro
                 </DropdownMenuItem>
               )}

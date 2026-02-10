@@ -40,7 +40,22 @@ export async function POST(req: Request) {
       // OR, if using Payment Links, we can't easily pass dynamic client_reference_id unless we append ?client_reference_id={uuid} to the URL.
       // Let's assume the client appends it: https://buy.stripe.com/...?client_reference_id=123
 
-      const userId = session.client_reference_id;
+      let userId = session.client_reference_id;
+
+      // Fallback: Try to find user by email if client_reference_id is missing
+      if (!userId && session.customer_details?.email) {
+        console.log(`⚠️ No client_reference_id. Looking up user by email: ${session.customer_details.email}`);
+        const { data: userByEmail } = await supabaseAdmin
+          .from("users")
+          .select("id")
+          .eq("email", session.customer_details.email)
+          .single();
+        
+        if (userByEmail) {
+          userId = userByEmail.id;
+          console.log(`✅ Found user ${userId} via email.`);
+        }
+      }
 
       if (userId) {
         console.log(
