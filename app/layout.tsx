@@ -109,7 +109,7 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         {children}
-        <Analytics />
+        {!process.env.NEXT_PUBLIC_EXT_BUILD && <Analytics />}
       </body>
     </html>
   );

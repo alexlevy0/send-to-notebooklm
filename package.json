@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build:background": "node scripts/build-background.js",
     "build": "next build",
-    "build:extension": "export EXT_BUILD=true && node scripts/build-background.js && next build && node scripts/extension-postbuild.js",
+    "build:extension": "export NEXT_PUBLIC_EXT_BUILD=true && node scripts/build-background.js && next build && node scripts/extension-postbuild.js",
     "start": "next start",
     "lint": "biome check",
     "format": "biome format --write"

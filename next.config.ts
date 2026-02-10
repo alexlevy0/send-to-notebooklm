@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 
-const isExtensionBuild = process.env.EXT_BUILD === 'true';
+const isExtensionBuild = process.env.NEXT_PUBLIC_EXT_BUILD === 'true';
 
 const nextConfig: NextConfig = {
   output: isExtensionBuild ? 'export' : undefined,
