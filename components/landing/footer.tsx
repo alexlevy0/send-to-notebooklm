@@ -30,21 +30,26 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="#how-it-works" className="hover:text-indigo-600">
+                  How it Works
+                </Link>
+              </li>
+              <li>
                 <Link href="#pricing" className="hover:text-indigo-600">
                   Pricing
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link href="#" className="hover:text-indigo-600">
                   Changelog
                 </Link>
-              </li>
+              </li> */}
             </ul>
           </div>
           <div className="space-y-4">
             <h4 className="font-bold text-neutral-900">Legal</h4>
             <ul className="space-y-2">
-              <li>
+              {/* <li>
                 <Link href="#" className="hover:text-indigo-600">
                   Privacy
                 </Link>
@@ -53,6 +58,11 @@ export function Footer() {
                 <Link href="#" className="hover:text-indigo-600">
                   Terms
                 </Link>
+              </li> */}
+               <li>
+                <a href="mailto:legal@send-to-notebooklm.com" className="hover:text-indigo-600">
+                  Legal Inquiries
+                </a>
               </li>
             </ul>
           </div>

@@ -19,7 +19,7 @@ export function CTA() {
         className="relative z-10 space-y-8 max-w-3xl"
       >
         <h2 className="text-4xl md:text-6xl font-black tracking-tighter text-neutral-900">
-          Ready to verify your <br/>
+          Ready to supercharge your <br/>
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">
             Research Workflow?
           </span>
