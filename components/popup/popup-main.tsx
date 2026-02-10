@@ -348,7 +348,6 @@ export default function PopupMain() {
                   <DropdownMenuItem onClick={handleSignOut} className="text-red-600 focus:text-red-700 focus:bg-red-50">
                      <LogOut className="mr-2 h-4 w-4" /> Sign Out
                   </DropdownMenuItem>
-                  <DropdownMenuSeparator />
                 </>
               ) : (
                 <>

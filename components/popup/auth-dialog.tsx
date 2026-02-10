@@ -49,6 +49,20 @@ export function AuthDialog({ open, onOpenChange, onLoginSuccess }: AuthDialogPro
      }
   };
 
+  // Reset state when dialog closes
+  useEffect(() => {
+    if (!open) {
+      // Small delay to allow fade-out animation
+      const timer = setTimeout(() => {
+        setStep("EMAIL");
+        setEmail("");
+        setOtp("");
+        setError(null);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [open]);
+
   const handleSendCode = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
@@ -82,25 +96,31 @@ export function AuthDialog({ open, onOpenChange, onLoginSuccess }: AuthDialogPro
       if (token.startsWith("http")) {
          try {
            const url = new URL(token);
-           // Try to find 'token' parameter
-           const linkToken = url.searchParams.get("token");
-           // Also check for hash fragment parameters just in case
-           const hashParams = new URLSearchParams(url.hash.substring(1));
-           const hashToken = hashParams.get("token") || hashParams.get("access_token");
+           
+           // Strategy 1: Search Params (standard)
+           let linkToken = url.searchParams.get("token");
+           let linkType = url.searchParams.get("type");
+
+           // Strategy 2: Hash Params (Supabase implicit flow)
+           if (!linkToken && url.hash) {
+             const hashParams = new URLSearchParams(url.hash.substring(1));
+             linkToken = hashParams.get("token") || hashParams.get("access_token");
+             if (!linkType) linkType = hashParams.get("type");
+           }
 
            if (linkToken) {
              token = linkToken;
-             type = "magiclink";
-           } else if (hashToken) {
-              // If we have an access_token directly, we might need a different flow,
-              // but standard Magic Links usually have 'token'
-              token = hashToken;
-              type = "magiclink";
+             // If we found a token in a URL, use the extracted type or default to magiclink
+             if (linkType && ["magiclink", "signup", "invite", "recovery", "email"].includes(linkType)) {
+                type = linkType as any;
+             } else {
+                type = "magiclink";
+             }
            } else {
              throw new Error("Could not find token in link");
            }
-         } catch (e) {
-           throw new Error("Invalid link format. Please paste the full 'Log In' link.");
+         } catch (e: any) {
+           throw new Error(e.message || "Invalid link format. Please paste the full 'Log In' link.");
          }
       }
 
@@ -115,12 +135,7 @@ export function AuthDialog({ open, onOpenChange, onLoginSuccess }: AuthDialogPro
       setTimeout(() => {
         onLoginSuccess();
         onOpenChange(false);
-        // Reset state after close
-        setTimeout(() => {
-          setStep("EMAIL");
-          setEmail("");
-          setOtp("");
-        }, 300);
+        // State reset handled by useEffect
       }, 1500);
 
     } catch (err: any) {

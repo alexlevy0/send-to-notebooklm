@@ -86,6 +86,71 @@ export async function POST(req: Request) {
       break;
     }
 
+    case "customer.subscription.deleted": {
+      const subscription = event.data.object;
+      const subscriptionId = subscription.id;
+
+      console.log(`❌ Subscription deleted/cancelled: ${subscriptionId}`);
+
+      // Find user with this subscription
+      const { data: user, error: findError } = await supabaseAdmin
+        .from("users")
+        .select("id")
+        .eq("stripe_subscription_id", subscriptionId)
+        .single();
+
+      if (!user) {
+         console.warn(`⚠️ User not found for subscription ${subscriptionId}`);
+         // Try finding by customer ID as fallback
+         const customerId = subscription.customer as string;
+         if (customerId) {
+            console.log(`Trying lookup by customer ID: ${customerId}`);
+            const { data: userByCust } = await supabaseAdmin
+               .from("users")
+               .select("id")
+               .eq("stripe_customer_id", customerId)
+               .single();
+            
+            if (userByCust) {
+               // Found by customer ID
+                const { error: updateError } = await supabaseAdmin
+                .from("users")
+                .update({
+                  tier: "free",
+                  stripe_subscription_id: null,
+                  updated_at: new Date().toISOString(),
+                })
+                .eq("id", userByCust.id);
+                 
+                 if (updateError) {
+                    console.error("❌ Failed to downgrade user found by customer ID:", updateError);
+                    return new NextResponse("Database Error", { status: 500 });
+                 }
+                 break;
+            }
+         }
+         // If still not found
+         return new NextResponse(null, { status: 200 });
+      }
+
+      console.log(`📉 Downgrading user ${user.id} to FREE tier...`);
+
+      const { error: updateError } = await supabaseAdmin
+        .from("users")
+        .update({
+          tier: "free",
+          stripe_subscription_id: null, // Clear subscription ID
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", user.id);
+
+      if (updateError) {
+        console.error("❌ Failed to downgrade user:", updateError);
+        return new NextResponse("Database Error", { status: 500 });
+      }
+      break;
+    }
+
     default:
       console.log(`Unhandled event type ${event.type}`);
   }

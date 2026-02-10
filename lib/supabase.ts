@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, EmailOtpType } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -109,7 +109,7 @@ export async function signInWithEmail(email: string) {
   return true;
 }
 
-import { EmailOtpType } from '@supabase/supabase-js';
+
 
 export async function verifyOtp(email: string, token: string, type: EmailOtpType = 'email') {
   const { data, error } = await supabase.auth.verifyOtp({
