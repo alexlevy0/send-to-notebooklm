@@ -296,7 +296,7 @@ export default function PopupMain() {
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="text-muted-foreground text-xs justify-center cursor-default hover:bg-transparent">
-                  Version 0.1.0
+                  Version 0.1.1
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -364,6 +364,7 @@ export default function PopupMain() {
             </Button>
           </div>
         ) : (
+
           <>
             <div className="flex flex-col flex-1 min-h-0 gap-2">
               <div className="flex items-center justify-between shrink-0">
@@ -387,9 +388,46 @@ export default function PopupMain() {
 
               <ScrollArea className="h-full w-full rounded-md border mt-2">
                 <div className="space-y-2 p-3 pr-4">
-                  {filteredNotebooks.length === 0 ? (
+                  {searchQuery.trim().length > 0 && (
+                     <Button 
+                        variant="ghost" 
+                        className="w-full justify-start gap-2 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 hover:text-indigo-800 border border-indigo-200"
+                        onClick={async () => {
+                           // Create Notebook Flow
+                           if (loading || addingToNotebookId) return;
+                           const title = searchQuery.trim();
+                           
+                           // Optimistic UI? No, let's wait.
+                           setLoading(true); // Re-use loading state or a new one? 
+                           // Better to use a specific state, but `loading` covers the list area which is fine.
+                           
+                           try {
+                             const newNotebook = await NotebookLM.createNotebook(title);
+                             
+                             // Add to local list
+                             setNotebooks(prev => [newNotebook, ...prev]);
+                             
+                             // Select it
+                             handleNotebookSelect(newNotebook);
+                             
+                             // Clear search
+                             setSearchQuery("");
+                             
+                           } catch (err: any) {
+                             console.error("Failed to create notebook:", err);
+                             setError(err.message || "Failed to create notebook");
+                             setLoading(false);
+                           }
+                        }}
+                     >
+                        <Badge className="bg-indigo-600 hover:bg-indigo-600 text-white">+</Badge>
+                        <span className="truncate">Create "<strong>{searchQuery}</strong>"</span>
+                     </Button>
+                  )}
+
+                  {filteredNotebooks.length === 0 && searchQuery.trim().length === 0 ? (
                     <div className="text-center text-sm text-muted-foreground py-8">
-                      No notebooks found matching "{searchQuery}"
+                       Type to search or create
                     </div>
                   ) : (
                     filteredNotebooks.map((nb) => (

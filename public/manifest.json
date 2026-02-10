@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Send to NotebookLM",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Capture web pages to Google NotebookLM",
   "permissions": [
     "cookies",
@@ -12,7 +12,8 @@
   ],
   "host_permissions": [
     "https://notebooklm.google.com/*",
-    "https://accounts.google.com/*"
+    "https://accounts.google.com/*",
+    "https://*.google.com/*"
   ],
   "action": {
     "default_popup": "popup.html",

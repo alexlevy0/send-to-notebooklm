@@ -139,4 +139,77 @@ export const NotebookLM = {
       throw e;
     }
   },
+
+
+  async createNotebook(title: string): Promise<Notebook> {
+    const auth = await getAuthTokens();
+
+    // Payload from notebooklm-kit analysis:
+    // [title, null, null, [2], [1, null, null, null, null, null, null, null, null, [1]]]
+    const innerPayload = [
+      title, 
+      null, 
+      null, 
+      [2], 
+      [1, null, null, null, null, null, null, null, null, [1]]
+    ];
+
+    const payload = [
+        innerPayload
+    ];
+
+    // NOTE: The RPC call for 'wXbhsf' usually expects a specific array structure.
+    // In `rpcCall`, we wrap the params in a specific way. 
+    // `listNotebooks` uses `[null, 50]`.
+    // `createNotebook` uses `[null, 1, title, [2]]`.
+    // We need to pass this `innerPayload` as the `params` argument to `rpcCall`.
+
+    try {
+      const response = await rpcCall(
+        RPCMethod.CREATE_NOTEBOOK, // wXbhsf
+        innerPayload,
+        auth,
+        "notebooks" // endpoint suffix (might need to be just 'notebooks' or empty?)
+      );
+      
+      // Response Analysis:
+      // The response to `wXbhsf` (when creating) likely contains the new notebook ID.
+      // Since we don't know the exact structure, we'll search for a UUID-like string in the response tree.
+      
+      const responseStr = JSON.stringify(response);
+      console.log("Create Notebook Response:", responseStr);
+
+      // UUID Regex (approximate for NotebookLM IDs which are UUIDs)
+      const uuidRegex = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
+      const match = responseStr.match(uuidRegex);
+
+      if (match) {
+        return {
+          id: match[0],
+          title: title
+        };
+      } else {
+        console.warn("Could not find Notebook ID in response. Falling back to list refresh.");
+        
+        // Fallback: Fetch list and find the notebook by title
+        // We wait a short bit to ensure propagation? usually RPC is consistent but let's just call it.
+        const notebooks = await this.listNotebooks();
+        
+        // Find notebook with same title. 
+        // If multiple, ideally we'd pick the one that wasn't there before, but we don't have the old list here easily.
+        // We'll pick the first one found (or maybe we should check for exact match).
+        const created = notebooks.find(nb => nb.title.trim() === title.trim());
+        
+        if (created) {
+           return created;
+        }
+        
+        throw new Error("Notebook creation RPC succeeded, but could not find the new notebook in the list.");
+      }
+
+    } catch (e) {
+      console.error("Failed to create notebook:", e);
+      throw e;
+    }
+  }
 };
