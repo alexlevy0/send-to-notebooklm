@@ -20,46 +20,31 @@ export function Navbar() {
 
   useEffect(() => {
     return scrollY.on("change", (latest) => {
-      setIsScrolled(latest > 50);
+      setIsScrolled(latest > 20);
     });
   }, [scrollY]);
 
-  const navBackground = useTransform(
-    scrollY,
-    [0, 100],
-    ["rgba(255, 255, 255, 0)", "rgba(255, 255, 255, 0.8)"]
-  );
-
-  const navBackdrop = useTransform(
-    scrollY,
-    [0, 100],
-    ["blur(0px)", "blur(12px)"]
-  );
-
-  const navBorder = useTransform(
-    scrollY,
-    [0, 100],
-    ["rgba(229, 231, 235, 0)", "rgba(229, 231, 235, 0.5)"]
-  );
-
   return (
     <>
-      {/* Reading Progress Bar */}
+      {/* Reading Progress Bar - Fixed at very top */}
       <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 origin-left z-50"
+        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 origin-left z-[60]"
         style={{ scaleX }}
       />
 
-      <motion.nav
-        style={{
-          backgroundColor: navBackground,
-          backdropFilter: navBackdrop,
-          borderBottom: "1px solid",
-          borderColor: navBorder,
-        }}
-        className="fixed top-0 left-0 right-0 z-40 transition-colors duration-200"
-      >
-        <div className="container mx-auto px-6 h-16 flex items-center justify-between">
+      {/* Floating Navbar Container */}
+      <div className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none">
+        <motion.nav
+          initial={{ y: -100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className={`pointer-events-auto flex items-center justify-between px-6 py-3 rounded-full transition-all duration-300 ${
+            isScrolled 
+                ? "bg-white/80 backdrop-blur-xl border border-neutral-200/50 shadow-lg shadow-black/5 w-full max-w-5xl" 
+                : "bg-transparent w-full max-w-7xl border border-transparent"
+          }`}
+        >
+          {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group">
             <div className="relative size-8 transition-transform duration-300 group-hover:rotate-12">
               <Image
@@ -67,39 +52,27 @@ export function Navbar() {
                 alt="Logo"
                 width={32}
                 height={32}
-                className="w-full h-full rounded-lg"
+                className="w-full h-full rounded-lg shadow-sm"
               />
             </div>
-            <span className="font-bold text-lg tracking-tight text-neutral-900">
+            <span className={`font-bold text-lg tracking-tight transition-colors ${isScrolled ? "text-neutral-900" : "text-neutral-900"}`}>
               Send to <span className="text-indigo-600">NotebookLM</span>
             </span>
           </Link>
 
+          {/* Desktop Links */}
           <div className="hidden md:flex items-center gap-8">
-            <Link
-              href="#features"
-              className="text-sm font-medium text-neutral-600 hover:text-neutral-900 transition-colors"
-            >
-              Features
-            </Link>
-            <Link
-              href="#how-it-works"
-              className="text-sm font-medium text-neutral-600 hover:text-neutral-900 transition-colors"
-            >
-              How it works
-            </Link>
-            <Link
-              href="#pricing"
-              className="text-sm font-medium text-neutral-600 hover:text-neutral-900 transition-colors"
-            >
-              Pricing
-            </Link>
+            <NavLink href="#features" label="Features" />
+            <NavLink href="#how-it-works" label="How it works" />
+            <NavLink href="#pricing" label="Pricing" />
           </div>
 
+          {/* CTA */}
           <div className="flex items-center gap-4">
             <Button
               variant="default"
-              className="rounded-full bg-neutral-900 text-white hover:bg-neutral-800 shadow-lg shadow-indigo-500/20 transition-all hover:scale-105"
+              size="sm"
+              className="rounded-full bg-neutral-900 text-white hover:bg-neutral-800 shadow-lg shadow-indigo-500/20 transition-all hover:scale-105 h-9 px-5 font-medium"
               asChild
             >
               <Link href="https://chromewebstore.google.com/detail/YOUR_REAL_EXTENSION_ID" target="_blank">
@@ -107,8 +80,20 @@ export function Navbar() {
               </Link>
             </Button>
           </div>
-        </div>
-      </motion.nav>
+        </motion.nav>
+      </div>
     </>
   );
+}
+
+function NavLink({ href, label }: { href: string; label: string }) {
+    return (
+        <Link
+            href={href}
+            className="text-sm font-medium text-neutral-600 hover:text-indigo-600 transition-colors relative group"
+        >
+            {label}
+            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-indigo-600 transition-all duration-300 group-hover:w-full" />
+        </Link>
+    );
 }

@@ -37,34 +37,36 @@ const features = [
 
 export function Features() {
   return (
-    <section id="features" className="py-24 px-6 bg-neutral-50 relative overflow-hidden">
+    <section id="features" className="py-32 px-6 bg-white relative overflow-hidden">
       
-       {/* Ambient Background */}
-       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-            <div className="absolute top-[-20%] left-[-10%] w-[800px] h-[800px] bg-indigo-100/40 rounded-full blur-[120px]" />
-            <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-purple-100/40 rounded-full blur-[100px]" />
+       {/* Ambient Background - Subtle Touch */}
+       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-40">
+            <div className="absolute top-[-20%] left-[-10%] w-[1000px] h-[1000px] bg-indigo-50/50 rounded-full blur-[120px]" />
+            <div className="absolute bottom-[-10%] right-[-10%] w-[800px] h-[800px] bg-purple-50/50 rounded-full blur-[100px]" />
        </div>
 
-      <div className="max-w-5xl mx-auto space-y-12 relative z-10">
-        <div className="text-center space-y-4">
+      <div className="max-w-6xl mx-auto space-y-16 relative z-10">
+        <div className="text-center space-y-6">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-3xl md:text-5xl font-bold tracking-tight text-neutral-900"
+            className="text-4xl md:text-6xl font-bold tracking-tight text-neutral-900"
           >
             Built for the modern <br />{" "}
-            <span className="text-indigo-600">Knowledge Worker</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">
+                Knowledge Worker
+            </span>
           </motion.h2>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-neutral-600 max-w-2xl mx-auto"
+            className="text-lg text-neutral-600 max-w-2xl mx-auto leading-relaxed"
           >
             Simplify your information diet. Stop drowning in bookmarks and start
-            building your second brain.
+            building your second brain with precision.
           </motion.p>
         </div>
 
@@ -87,22 +89,22 @@ function BentoCard({ title, description, icon: Icon, className, index }: any) {
         transition={{ duration: 0.5, delay: index * 0.1 }}
         className={className}
     >
-        <SpotlightCard className="h-full rounded-3xl border border-neutral-200 bg-white shadow-sm overflow-hidden group">
-            <div className="p-8 h-full flex flex-col items-start gap-4">
-                <div className="size-12 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6">
-                    <Icon className="size-6 text-indigo-600 transition-colors group-hover:text-indigo-700" />
+        <SpotlightCard className="h-full rounded-[2rem] border border-neutral-200/60 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden group">
+            <div className="p-10 h-full flex flex-col items-start gap-6">
+                <div className="size-14 rounded-2xl bg-indigo-50/80 border border-indigo-100/50 flex items-center justify-center transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3 shadow-inner">
+                    <Icon className="size-7 text-indigo-600 transition-colors group-hover:text-indigo-700" />
                 </div>
 
-                <div className="space-y-2">
-                    <h3 className="text-xl font-bold text-neutral-900 group-hover:text-indigo-600 transition-colors duration-300">{title}</h3>
-                    <p className="text-neutral-600 text-sm leading-relaxed">
+                <div className="space-y-3 relative z-10">
+                    <h3 className="text-2xl font-bold text-neutral-900 tracking-tight group-hover:text-indigo-700 transition-colors duration-300">{title}</h3>
+                    <p className="text-neutral-500 text-base leading-relaxed">
                     {description}
                     </p>
                 </div>
 
-                {/* Decorative Pattern in Card */}
-                <div className="absolute top-0 right-0 p-6 opacity-5 pointer-events-none group-hover:opacity-10 transition-opacity">
-                    <Icon className="size-32 -rotate-12 translate-x-8 -translate-y-8" />
+                {/* Decorative Pattern in Card - More subtle */}
+                <div className="absolute -bottom-6 -right-6 p-6 opacity-[0.03] pointer-events-none group-hover:opacity-[0.08] transition-opacity duration-500">
+                    <Icon className="size-40 -rotate-12" />
                 </div>
             </div>
         </SpotlightCard>

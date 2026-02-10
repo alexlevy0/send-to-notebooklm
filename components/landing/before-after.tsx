@@ -1,177 +1,176 @@
 "use client";
 
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, XCircle, ArrowRight, Clock, Zap, FileText, MousePointer, Copy } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { motion } from "framer-motion";
 
 export function BeforeAfter() {
   return (
-    <section className="py-20 bg-neutral-50 border-t border-neutral-100">
-      <div className="container mx-auto px-4 max-w-6xl">
+    <section className="py-32 bg-neutral-50/50 relative overflow-hidden">
+      
+      {/* Background Decor */}
+      <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:24px_24px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_10%,transparent_100%)] opacity-50 pointer-events-none" />
+
+      <div className="container mx-auto px-4 max-w-7xl relative z-10">
         
         {/* Header */}
-        <div className="text-center mb-16 space-y-4">
-          <Badge variant="secondary" className="mb-4">Time Savings</Badge>
-          <h2 className="text-4xl font-bold tracking-tight text-neutral-900">
-            From 45 seconds to 3 seconds
+        <div className="text-center mb-24 space-y-6">
+          <Badge variant="secondary" className="mb-2 bg-indigo-100 text-indigo-700 border-indigo-200 px-4 py-1.5 text-sm font-semibold rounded-full">
+            Workflow Transformation
+          </Badge>
+          <h2 className="text-4xl md:text-6xl font-black tracking-tighter text-neutral-900">
+            Chaos vs. <span className="text-indigo-600">Clarity</span>
           </h2>
-          <p className="text-xl text-neutral-600">
-            See the dramatic difference in your workflow
+          <p className="text-lg text-neutral-500 max-w-2xl mx-auto">
+            See how Send to NotebookLM streamlines your research process from a messy manual workflow to a single click.
           </p>
         </div>
 
-        {/* Comparison */}
-        <div className="grid md:grid-cols-2 gap-8">
+        {/* Comparison Graphic */}
+        <div className="relative grid md:grid-cols-2 gap-12 md:gap-24 items-center">
           
-          {/* BEFORE */}
-          <div className="bg-white rounded-2xl p-8 border-2 border-red-100 relative overflow-hidden shadow-sm">
-            {/* Badge */}
-            <div className="absolute top-4 right-4 bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-medium">
-              Old Way
-            </div>
-
-            <h3 className="text-2xl font-bold mb-6 text-red-900">
-              Before Send to NotebookLM
-            </h3>
-
-            <ol className="space-y-4">
-              <li className="flex gap-3">
-                <span className="flex-shrink-0 w-8 h-8 bg-red-100 text-red-700 rounded-full flex items-center justify-center font-bold text-sm">
-                  1
-                </span>
-                <div>
-                  <p className="font-medium text-neutral-900">Copy the URL</p>
-                  <p className="text-sm text-neutral-500">Select and copy the page URL</p>
-                </div>
-              </li>
-              <li className="flex gap-3">
-                <span className="flex-shrink-0 w-8 h-8 bg-red-100 text-red-700 rounded-full flex items-center justify-center font-bold text-sm">
-                  2
-                </span>
-                <div>
-                  <p className="font-medium text-neutral-900">Switch tabs</p>
-                  <p className="text-sm text-neutral-500">Navigate to NotebookLM</p>
-                </div>
-              </li>
-              <li className="flex gap-3">
-                <span className="flex-shrink-0 w-8 h-8 bg-red-100 text-red-700 rounded-full flex items-center justify-center font-bold text-sm">
-                  3
-                </span>
-                <div>
-                  <p className="font-medium text-neutral-900">Open notebook</p>
-                  <p className="text-sm text-neutral-500">Find and open your target notebook</p>
-                </div>
-              </li>
-              <li className="flex gap-3">
-                <span className="flex-shrink-0 w-8 h-8 bg-red-100 text-red-700 rounded-full flex items-center justify-center font-bold text-sm">
-                  4
-                </span>
-                <div>
-                  <p className="font-medium text-neutral-900">Add source</p>
-                  <p className="text-sm text-neutral-500">Click "Add Source" button</p>
-                </div>
-              </li>
-              <li className="flex gap-3">
-                <span className="flex-shrink-0 w-8 h-8 bg-red-100 text-red-700 rounded-full flex items-center justify-center font-bold text-sm">
-                  5
-                </span>
-                <div>
-                  <p className="font-medium text-neutral-900">Paste URL</p>
-                  <p className="text-sm text-neutral-500">Paste and confirm the URL</p>
-                </div>
-              </li>
-              <li className="flex gap-3">
-                <span className="flex-shrink-0 w-8 h-8 bg-red-100 text-red-700 rounded-full flex items-center justify-center font-bold text-sm">
-                  6
-                </span>
-                <div>
-                  <p className="font-medium text-neutral-900">Wait for processing</p>
-                  <p className="text-sm text-neutral-500">Wait for NotebookLM to process</p>
-                </div>
-              </li>
-            </ol>
-
-            {/* Time Badge */}
-            <div className="mt-8 p-4 bg-red-50 rounded-lg border border-red-200">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-red-900 font-medium">Total Time:</span>
-                <Badge variant="destructive" className="text-lg font-bold">
-                  ~45 seconds
-                </Badge>
-              </div>
-              <p className="text-xs text-red-700 mt-2">
-                × 20 captures/day = 15 minutes wasted daily
-              </p>
-            </div>
+          {/* Connector Arrow (Desktop) - Animated */}
+          <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none">
+             <motion.div 
+                animate={{ x: [0, 10, 0], opacity: [0.5, 1, 0.5] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+             >
+                 <div className="bg-white/80 backdrop-blur-md rounded-full p-4 shadow-xl border border-neutral-200/50 text-neutral-400">
+                    <ArrowRight className="size-8" />
+                 </div>
+             </motion.div>
           </div>
 
-          {/* AFTER */}
-          <div className="bg-gradient-to-br from-indigo-50 to-white rounded-2xl p-8 border-2 border-indigo-200 relative overflow-hidden shadow-lg">
-            {/* Badge */}
-            <div className="absolute top-4 right-4 bg-indigo-600 text-white px-3 py-1 rounded-full text-sm font-medium shadow-md">
-              New Way ✨
+          {/* OLD WAY: The Cluttered Stack */}
+          <motion.div 
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="group relative flex flex-col items-center"
+          >
+             <div className="mb-8 text-center">
+                <h3 className="text-2xl font-bold text-neutral-500 flex items-center justify-center gap-2 mb-2">
+                    <XCircle className="size-6 text-red-500" /> The Old Way
+                </h3>
+                <p className="text-neutral-400">Manual, slow, and distracting.</p>
+             </div>
+
+            {/* The Stack */}
+            <div className="relative w-full max-w-sm h-[400px] flex items-center justify-center">
+                {/* Card 3 (Bottom) */}
+                <motion.div 
+                    className="absolute w-full bg-white p-6 rounded-2xl shadow-md border border-neutral-200 rotate-[-6deg] opacity-60 scale-90 top-12"
+                    whileHover={{ rotate: -8, scale: 0.92 }}
+                >
+                    <div className="flex items-center gap-3 text-neutral-400 mb-4 opacity-50">
+                        <FileText className="size-5" />
+                        <span className="font-semibold">Find Notebook</span>
+                    </div>
+                    <div className="h-2 w-3/4 bg-neutral-100 rounded mb-2" />
+                    <div className="h-2 w-1/2 bg-neutral-100 rounded" />
+                </motion.div>
+
+                {/* Card 2 (Middle) */}
+                <motion.div 
+                    className="absolute w-full bg-white p-6 rounded-2xl shadow-lg border border-neutral-200 rotate-[3deg] opacity-80 scale-95 top-0"
+                     whileHover={{ rotate: 5, scale: 0.97 }}
+                >
+                    <div className="flex items-center gap-3 text-neutral-500 mb-4 opacity-70">
+                        <Copy className="size-5" />
+                        <span className="font-semibold">Copy & Paste URL</span>
+                    </div>
+                     <div className="h-10 w-full bg-neutral-50 border border-neutral-100 rounded mb-2 flex items-center px-3 text-xs text-neutral-300">
+                        https://...
+                     </div>
+                </motion.div>
+
+                {/* Card 1 (Top) */}
+                <motion.div 
+                    className="absolute w-full bg-white p-8 rounded-2xl shadow-xl border border-red-100 rotate-[-2deg] z-10"
+                    whileHover={{ rotate: 0, scale: 1.02 }}
+                >
+                    <div className="flex items-center gap-3 text-red-900 mb-6">
+                        <MousePointer className="size-6 text-red-500" />
+                        <span className="font-bold text-lg">Manual Context Switching</span>
+                    </div>
+                    <div className="space-y-3">
+                        <div className="flex items-center justify-between text-sm text-neutral-600 border-b border-neutral-50 pb-2">
+                            <span>Steps required</span>
+                            <span className="font-bold text-red-500">6+</span>
+                        </div>
+                        <div className="flex items-center justify-between text-sm text-neutral-600 border-b border-neutral-50 pb-2">
+                             <span>Time taken</span>
+                             <span className="font-bold text-red-500">~45s</span>
+                        </div>
+                         <div className="flex items-center justify-between text-sm text-neutral-600">
+                             <span>Cognitive load</span>
+                             <span className="font-bold text-red-500">High</span>
+                        </div>
+                    </div>
+                </motion.div>
+            </div>
+          </motion.div>
+
+          {/* NEW WAY: The Floating Orb */}
+          <motion.div 
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="group relative flex flex-col items-center"
+          >
+             <div className="mb-8 text-center">
+                <h3 className="text-2xl font-bold text-indigo-900 flex items-center justify-center gap-2 mb-2">
+                    <CheckCircle className="size-6 text-indigo-600" /> The New Way
+                </h3>
+                <p className="text-indigo-600/70">Instant, magical, and focused.</p>
+             </div>
+            
+            <div className="relative w-full max-w-sm h-[400px] flex items-center justify-center">
+                
+                {/* Glow Effect */}
+                <div className="absolute inset-0 bg-indigo-500/20 blur-[100px] rounded-full pointer-events-none" />
+
+                {/* Floating Card */}
+                <motion.div 
+                    animate={{ y: [0, -15, 0] }}
+                    transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                    className="relative w-full bg-white/80 backdrop-blur-xl p-8 rounded-[2rem] shadow-2xl shadow-indigo-500/30 border border-white/50 z-10"
+                >
+                     {/* Magic Sparkles */}
+                     <motion.div 
+                        animate={{ opacity: [0, 1, 0], scale: [0.5, 1, 0.5] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                        className="absolute -top-6 -right-6 text-4xl"
+                     >
+                         ✨
+                     </motion.div>
+
+                    <div className="flex flex-col items-center justify-center py-8">
+                        <div className="size-24 bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-3xl shadow-lg flex items-center justify-center mb-6 text-white transform transition-transform group-hover:scale-110 group-hover:rotate-3 duration-500">
+                            <Zap className="size-12 fill-white" />
+                        </div>
+                        
+                        <h4 className="text-2xl font-black text-indigo-950 mb-2">One Click.</h4>
+                        <p className="text-indigo-600 font-medium mb-8">Done in 3 seconds.</p>
+
+                        <div className="w-full bg-indigo-50 rounded-xl p-4 flex items-center justify-between border border-indigo-100">
+                            <div className="flex items-center gap-2 text-indigo-900 font-medium">
+                                <Clock className="size-4 text-indigo-600" />
+                                <span>Time Saved</span>
+                            </div>
+                            <span className="bg-white px-2 py-1 rounded-md text-sm font-bold text-indigo-600 shadow-sm border border-indigo-100">
+                                93%
+                            </span>
+                        </div>
+                    </div>
+                </motion.div>
             </div>
 
-            <h3 className="text-2xl font-bold mb-6 text-indigo-900">
-              With Send to NotebookLM
-            </h3>
-
-            <ol className="space-y-4">
-              <li className="flex gap-3">
-                <span className="flex-shrink-0 w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-sm shadow">
-                  1
-                </span>
-                <div>
-                  <p className="font-medium text-lg text-neutral-900">Click extension icon</p>
-                  <p className="text-sm text-indigo-700 font-medium">That's it. Done. ✓</p>
-                </div>
-              </li>
-            </ol>
-
-            {/* Spacer to align with BEFORE */}
-            <div className="h-[320px] flex items-center justify-center">
-              <div className="text-center">
-                <CheckCircle className="h-24 w-24 text-indigo-600 mx-auto mb-4" />
-                <p className="text-indigo-900 font-bold text-2xl">
-                  Automated & Instant
-                </p>
-                <p className="text-indigo-700 mt-2 text-lg">
-                  No manual steps. No context switching.
-                </p>
-              </div>
-            </div>
-
-            {/* Time Badge */}
-            <div className="mt-8 p-4 bg-indigo-100 rounded-lg border-2 border-indigo-300 shadow-sm">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-indigo-900 font-medium">Total Time:</span>
-                <Badge className="bg-indigo-600 text-lg font-bold hover:bg-indigo-700">
-                  ~3 seconds
-                </Badge>
-              </div>
-              <p className="text-xs text-indigo-800 mt-2 font-medium">
-                × 20 captures/day = 1 minute. Save 14 minutes daily! 🎉
-              </p>
-            </div>
-          </div>
+          </motion.div>
 
         </div>
-
-        {/* Stats */}
-        <div className="grid grid-cols-3 gap-6 mt-12 max-w-4xl mx-auto">
-          <div className="text-center p-6 bg-white rounded-xl border border-neutral-100 shadow-sm">
-            <div className="text-4xl font-bold text-indigo-600 mb-2">93%</div>
-            <p className="text-sm text-neutral-500">Time Saved</p>
-          </div>
-          <div className="text-center p-6 bg-white rounded-xl border border-neutral-100 shadow-sm">
-            <div className="text-4xl font-bold text-indigo-600 mb-2">1 click</div>
-            <p className="text-sm text-neutral-500">vs 6 steps</p>
-          </div>
-          <div className="text-center p-6 bg-white rounded-xl border border-neutral-100 shadow-sm">
-            <div className="text-4xl font-bold text-indigo-600 mb-2">14 min</div>
-            <p className="text-sm text-neutral-500">Saved daily</p>
-          </div>
-        </div>
-
       </div>
     </section>
   );

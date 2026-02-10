@@ -67,7 +67,7 @@ export function Pricing() {
           </motion.p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8 items-start max-w-4xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-8 items-center max-w-5xl mx-auto">
           {tiers.map((tier, index) => (
             <motion.div
               key={tier.id}
@@ -75,57 +75,51 @@ export function Pricing() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              whileHover={{ scale: 1.02 }} // Scale effect on hover
-              className={`relative rounded-3xl p-8 shadow-sm border ${
+              className={`relative rounded-3xl p-8 border transition-all duration-300 ${
                 tier.featured
-                  ? "bg-neutral-900 text-white border-neutral-800 shadow-2xl shadow-indigo-500/20"
-                  : "bg-white text-neutral-900 border-neutral-200"
+                  ? "bg-neutral-900/95 backdrop-blur-xl border-neutral-800 shadow-2xl shadow-indigo-500/30 md:scale-110 md:-translate-y-4 z-10"
+                  : "bg-white border-white/50 shadow-sm hover:shadow-md hover:border-neutral-200"
               }`}
             >
               {tier.featured && (
                 <>
-                    {/* Animated Gradient Background for Pro Card (Whole Card) */}
-                    <motion.div 
-                        animate={{ 
-                            backgroundPosition: ["0% 0%", "100% 100%"],
-                        }}
-                        transition={{ 
-                            duration: 5, 
-                            repeat: Infinity, 
-                            repeatType: "reverse",
-                            ease: "linear"
-                        }}
-                        className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(68,55,125,0.2)_50%,rgba(236,72,153,0.2)_75%,transparent_100%)] bg-[length:200%_200%] pointer-events-none rounded-3xl"
+                    {/* Shimmer Border Effect */}
+                    <div className="absolute inset-0 rounded-3xl p-[1px] bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-50 mask-gradient animate-shimmer-border pointer-events-none" 
+                        style={{ maskImage: "linear-gradient(#000, #000) content-box, linear-gradient(#000, #000)", maskComposite: "exclude" }}
                     />
                     
-                     <div className="absolute top-0 right-0 p-6">
-                         <div className="relative inline-flex items-center gap-1 rounded-full bg-indigo-500/10 px-3 py-1 text-xs font-semibold text-indigo-400 ring-1 ring-inset ring-indigo-400/30">
-                            <Star className="size-3 fill-indigo-400" /> Most Popular
-                         </div>
+                    {/* Spotlight Background */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/10 to-purple-500/10 rounded-3xl pointer-events-none" />
+
+                     <div className="absolute -top-5 left-0 right-0 flex justify-center">
+                          <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-lg shadow-indigo-500/40 flex items-center gap-1.5">
+                             <Sparkles className="size-3.5 fill-white" /> Most Popular
+                          </div>
                     </div>
                 </>
               )}
 
               <div className="mb-6 space-y-2 relative z-10">
-                <h3 className="text-2xl font-bold flex items-center gap-2">
+                <h3 className={`text-2xl font-bold ${tier.featured ? "text-white" : "text-neutral-900"}`}>
                     {tier.name}
-                    {tier.featured && <Sparkles className="h-5 w-5 text-indigo-400" />}
                 </h3>
                 <p className={`text-sm ${tier.featured ? "text-neutral-400" : "text-neutral-500"}`}>
                   {tier.description}
                 </p>
               </div>
 
-              <div className="mb-6 flex items-baseline gap-1 relative z-10">
-                <span className="text-5xl font-bold tracking-tight">{tier.price}</span>
-                <span className={`text-sm ${tier.featured ? "text-neutral-400" : "text-neutral-500"}`}>/ month</span>
+              <div className="mb-8 flex items-baseline gap-1 relative z-10">
+                <span className={`text-5xl font-black tracking-tighter ${tier.featured ? "text-white" : "text-neutral-900"}`}>{tier.price}</span>
+                <span className={`text-sm font-medium ${tier.featured ? "text-neutral-400" : "text-neutral-500"}`}>/month</span>
               </div>
 
-              <ul className="mb-8 space-y-4 relative z-10">
+              <ul className="mb-10 space-y-4 relative z-10">
                 {tier.features.map((feature) => (
                   <li key={feature} className="flex items-start gap-3">
-                    <Check className={`size-5 shrink-0 ${tier.featured ? "text-indigo-400" : "text-green-600"}`} />
-                    <span className={`text-sm ${tier.featured ? "text-neutral-300" : "text-neutral-600"}`}>
+                    <div className={`mt-1 size-5 rounded-full flex items-center justify-center shrink-0 ${tier.featured ? "bg-indigo-500/20 text-indigo-400" : "bg-green-100 text-green-600"}`}>
+                        <Check className="size-3" />
+                    </div>
+                    <span className={`text-sm font-medium ${tier.featured ? "text-neutral-200" : "text-neutral-600"}`}>
                       {feature}
                     </span>
                   </li>
@@ -134,11 +128,11 @@ export function Pricing() {
 
               <Button
                 asChild
-                variant={tier.featured ? "default" : "outline"}
-                className={`w-full rounded-full h-12 text-base font-semibold transition-all relative z-10 ${
+                size="lg"
+                className={`w-full rounded-full h-14 text-base font-bold shadow-lg transition-all hover:scale-[1.02] relative z-10 ${
                     tier.featured 
-                    ? "bg-white text-neutral-900 hover:bg-neutral-100" 
-                    : "border-neutral-200 hover:bg-neutral-50"
+                    ? "bg-white text-neutral-900 hover:bg-neutral-100 shadow-indigo-500/25" 
+                    : "bg-white border-2 border-neutral-100 text-neutral-900 hover:bg-neutral-50 hover:border-neutral-200 shadow-none"
                 }`}
               >
                 <a href={tier.href} target="_blank">
@@ -147,8 +141,8 @@ export function Pricing() {
               </Button>
               
               {tier.featured && (
-                  <p className="text-xs text-center text-neutral-500 mt-4 relative z-10">
-                    Cancel anytime. No questions asked.
+                  <p className="text-xs text-center text-neutral-500 mt-5 relative z-10 font-medium">
+                    30-day money-back guarantee
                   </p>
               )}
             </motion.div>

@@ -10,7 +10,8 @@ import { Pricing } from "@/components/landing/pricing";
 
 export default function LandingPage() {
   return (
-    <div className="bg-white min-h-screen text-neutral-900 selection:bg-indigo-100 selection:text-indigo-900">
+    <div className="bg-white min-h-screen text-neutral-900 selection:bg-indigo-100 selection:text-indigo-900 bg-dot-pattern relative">
+      <div className="fixed inset-0 bg-[linear-gradient(to_bottom,transparent,white)] pointer-events-none" />
       <Navbar />
       <Hero />
       <Features />
