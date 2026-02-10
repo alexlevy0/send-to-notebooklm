@@ -79,6 +79,55 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* How it Works Section */}
+        <section id="how-it-works" className="py-24 bg-white">
+          <div className="max-w-5xl mx-auto px-6 space-y-16">
+            <div className="text-center space-y-4">
+              <h2 className="text-3xl md:text-4xl font-bold text-neutral-900">
+                Seamless Workflow
+              </h2>
+              <p className="text-neutral-600 max-w-2xl mx-auto">
+                Turn any web page into a source in seconds. No more downloading PDFs or copying text manually.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-8">
+              {/* Step 1 */}
+              <div className="relative p-6 rounded-2xl bg-neutral-50 border border-neutral-100 space-y-4">
+                <div className="size-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-xl">
+                  1
+                </div>
+                <h3 className="text-xl font-semibold text-neutral-900">Install Extension</h3>
+                <p className="text-neutral-600">
+                  Add Send to NotebookLM to Chrome. It lives quietly in your browser toolbar until you need it.
+                </p>
+              </div>
+
+              {/* Step 2 */}
+              <div className="relative p-6 rounded-2xl bg-neutral-50 border border-neutral-100 space-y-4">
+                <div className="size-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-xl">
+                  2
+                </div>
+                <h3 className="text-xl font-semibold text-neutral-900">Uncover Insights</h3>
+                <p className="text-neutral-600">
+                  Found a great article or PDF? Click the extension icon to instantly capture the content.
+                </p>
+              </div>
+
+              {/* Step 3 */}
+              <div className="relative p-6 rounded-2xl bg-neutral-50 border border-neutral-100 space-y-4">
+                <div className="size-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-xl">
+                  3
+                </div>
+                <h3 className="text-xl font-semibold text-neutral-900">Send to Notebook</h3>
+                <p className="text-neutral-600">
+                  Select your destination notebook and watch as the source appears in NotebookLM instantly.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Pricing Section */}
         <section
           id="pricing"
@@ -171,11 +220,32 @@ export default function LandingPage() {
       </main>
 
       {/* Footer */}
-      <footer className="px-6 py-12 border-t border-neutral-200 text-center text-neutral-500 text-sm bg-neutral-50">
-        <p>
-          &copy; {new Date().getFullYear()} Send to NotebookLM. All rights
-          reserved.
-        </p>
+      <footer className="px-6 py-12 border-t border-neutral-200 bg-neutral-50">
+        <div className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="flex items-center gap-2 font-bold text-neutral-900">
+            <div className="size-6 rounded-md bg-gradient-to-br from-indigo-600 to-purple-600 shadow-sm text-white flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M13.4 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7.4" />
+                <path d="M2 6h4" />
+                <path d="M2 10h4" />
+                <path d="M2 14h4" />
+                <path d="M2 18h4" />
+                <path d="M18.4 2.6a2.1 2.1 0 1 1 3 3L11 16l-4 1 1-4Z" />
+              </svg>
+            </div>
+            <span>Send to NotebookLM</span>
+          </div>
+          
+          <div className="flex gap-6 text-sm text-neutral-500">
+            <Link href="#" className="hover:text-neutral-900 transition-colors">Privacy Policy</Link>
+            <Link href="#" className="hover:text-neutral-900 transition-colors">Terms of Service</Link>
+            <Link href="mailto:support@send-to-notebooklm.com" className="hover:text-neutral-900 transition-colors">Contact</Link>
+          </div>
+
+          <p className="text-neutral-400 text-sm">
+            &copy; {new Date().getFullYear()} All rights reserved.
+          </p>
+        </div>
       </footer>
     </div>
   );
