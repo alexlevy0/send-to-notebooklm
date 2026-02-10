@@ -12,10 +12,12 @@ import {
   Sparkles,
   Zap,
   Crown,
+  Search,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Card,
 } from "@/components/ui/card";
@@ -53,6 +55,11 @@ export default function PopupMain() {
     monthly: number;
   } | null>(null);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredNotebooks = notebooks.filter((nb) =>
+    nb.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   useEffect(() => {
     if (typeof chrome !== "undefined" && chrome.tabs) {
@@ -142,21 +149,12 @@ export default function PopupMain() {
     return () => window.removeEventListener('keydown', handleKeyboard);
   }, [selectedNotebookId, notebooks]);
 
+  // Restore last selected notebook logic REMOVED based on user feedback
+  /*
   useEffect(() => {
-    notebooks.length === 0 ||
-    typeof chrome === "undefined" ||
-    !chrome.storage
-      ? null
-      : chrome.storage.local.get("lastNotebook", (result) => {
-          if (result.lastNotebook && result.lastNotebook.id) {
-            const found = notebooks.find((nb) => nb.id === result.lastNotebook.id);
-            if (found) {
-              setSelectedNotebookId(found.id);
-              console.log("Restored last notebook:", found.title);
-            }
-          }
-        });
+    ...
   }, [notebooks]);
+  */
 
   const handleNotebookSelect = async (notebook: Notebook) => {
     if (addingToNotebookId) return;
@@ -367,9 +365,26 @@ export default function PopupMain() {
                 <Badge variant="secondary">{notebooks.length} found</Badge>
               </div>
 
-              <ScrollArea className="h-full w-full rounded-md border">
+              <div className="px-1">
+                <div className="relative">
+                  <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search notebooks..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-8 bg-card"
+                  />
+                </div>
+              </div>
+
+              <ScrollArea className="h-full w-full rounded-md border mt-2">
                 <div className="space-y-2 p-3 pr-4">
-                  {notebooks.map((nb) => (
+                  {filteredNotebooks.length === 0 ? (
+                    <div className="text-center text-sm text-muted-foreground py-8">
+                      No notebooks found matching "{searchQuery}"
+                    </div>
+                  ) : (
+                    filteredNotebooks.map((nb) => (
                     <Card
                       key={nb.id}
                       className={`cursor-pointer group transition-all duration-200 hover:shadow-md hover:border-indigo-200 mx-1 border-transparent hover:bg-white
@@ -401,7 +416,7 @@ export default function PopupMain() {
                           )}
                       </div>
                     </Card>
-                  ))}
+                  )))}
                 </div>
               </ScrollArea>
             </div>
