@@ -22,6 +22,7 @@ export class LimitReachedError extends Error {
 
 export interface UsageInfo {
   userId?: string; // Added userId
+  email?: string; // Added email
   allowed: boolean;
   isPro: boolean;
   remaining?: {
@@ -73,6 +74,7 @@ export async function checkLimit(): Promise<UsageInfo> {
     console.error('Error checking limit:', error);
     return {
       userId: session?.user?.id, // Return ID even on error if possible
+      email: session?.user?.email,
       allowed: false,
       isPro: false,
       error: error.message
@@ -81,7 +83,7 @@ export async function checkLimit(): Promise<UsageInfo> {
 
   // Parse result explicitly
   const result = data as UsageInfo;
-  return { ...result, userId: session?.user?.id }; // Append userId
+  return { ...result, userId: session?.user?.id, email: session?.user?.email }; // Append userId and email
 }
 
 export async function incrementUsage(): Promise<void> {
@@ -91,4 +93,42 @@ export async function incrementUsage(): Promise<void> {
     console.error('Error incrementing usage:', error);
     throw new Error(error.message);
   }
+}
+// Auth Functions
+export async function signInWithEmail(email: string) {
+  const { error } = await supabase.auth.signInWithOtp({
+    email,
+    options: {
+      shouldCreateUser: true,
+      // We don't need a redirect URL for OTP, but sometimes it's required by the API.
+      // For extensions, we rely on the OTP code flow, not the link flow if possible.
+    },
+  });
+  
+  if (error) throw error;
+  return true;
+}
+
+import { EmailOtpType } from '@supabase/supabase-js';
+
+export async function verifyOtp(email: string, token: string, type: EmailOtpType = 'email') {
+  const { data, error } = await supabase.auth.verifyOtp({
+    email,
+    token,
+    type,
+  });
+
+  if (error) throw error;
+  return data;
+}
+
+export async function signOut() {
+  const { error } = await supabase.auth.signOut();
+  if (error) throw error;
+  return true;
+}
+
+export async function getUser() {
+  const { data: { user } } = await supabase.auth.getUser();
+  return user;
 }

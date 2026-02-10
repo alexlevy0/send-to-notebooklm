@@ -5,15 +5,23 @@ console.log('🚀 Background service worker loaded (TypeScript)');
 
 // Create context menu on install
 chrome.runtime.onInstalled.addListener(() => {
-  console.log('📋 Creating context menu...');
-  
-  chrome.contextMenus.create({
-    id: 'send-to-notebooklm',
-    title: 'Send to NotebookLM',
-    contexts: ['selection'],
+  console.log("📋 Extension installed/updated. Setting up context menu...");
+  chrome.contextMenus.removeAll(() => {
+    if (chrome.runtime.lastError) {
+      console.warn("⚠️ Error removing context menus:", chrome.runtime.lastError);
+    }
+    chrome.contextMenus.create({
+      id: "send-to-notebooklm",
+      title: "Send to NotebookLM",
+      contexts: ["selection"]
+    }, () => {
+      if (chrome.runtime.lastError) {
+        console.error("❌ Error creating context menu:", chrome.runtime.lastError);
+      } else {
+        console.log("✅ Context menu 'Send to NotebookLM' created successfully");
+      }
+    });
   });
-
-  console.log('✅ Context menu created');
 });
 
 // Handle context menu clicks

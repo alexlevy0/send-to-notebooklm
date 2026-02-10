@@ -62,13 +62,14 @@ export async function POST(req: Request) {
           `✅ Payment successful for user ${userId}. Upgrading to PRO...`,
         );
 
-        // Update user tier in Supabase
+        // Update user tier AND email in Supabase
         const { error } = await supabaseAdmin
           .from("users")
           .update({
             tier: "pro",
             stripe_customer_id: customerId,
             stripe_subscription_id: subscriptionId,
+            email: session.customer_details?.email, // Save email from Stripe
             updated_at: new Date().toISOString(),
           })
           .eq("id", userId);

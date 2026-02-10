@@ -13,6 +13,7 @@ import {
   Zap,
   Crown,
   Search,
+  LogOut,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -33,9 +34,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { NotebookLM } from "@/lib/notebooklm/api";
 import type { Notebook } from "@/lib/notebooklm/types";
-import { checkLimit } from "@/lib/supabase"; // Import checkLimit for status
+import { checkLimit, signOut } from "@/lib/supabase"; // Import checkLimit and signOut
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useCallback } from "react";
+import { AuthDialog } from "./auth-dialog";
 
 // TODO: Replace with your actual Stripe links from the Dashboard
 const STRIPE_PAYMENT_LINK = "https://buy.stripe.com/test_28E28s8BcgZd2Td4Z6cfK00";
@@ -54,12 +56,14 @@ export default function PopupMain() {
   const [currentUrl, setCurrentUrl] = useState<string | null>(null);
   const [isPro, setIsPro] = useState<boolean>(false);
   const [userId, setUserId] = useState<string | null>(null);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
   const [checkingStatus, setCheckingStatus] = useState(true);
   const [usageInfo, setUsageInfo] = useState<{
     daily: number;
     monthly: number;
   } | null>(null);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [showAuthDialog, setShowAuthDialog] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredNotebooks = notebooks.filter((nb) =>
@@ -108,13 +112,33 @@ export default function PopupMain() {
     }
   };
 
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const fetchUserStatus = async () => {
     setCheckingStatus(true);
     try {
       const status = await checkLimit();
+      
+      if (status.error) {
+         console.error("Status check failed:", status.error);
+         // If we have an auth error, we might want to show it, or at least log it.
+         // If generic error, maybe don't block the UI if notebooks load fine.
+         // But if it's "Authentication failed", we should probably warn.
+         if (status.error.includes("Authentication failed")) {
+             setError(status.error);
+         }
+      }
+
       setIsPro(status.isPro);
       if (status.userId) {
         setUserId(status.userId);
+      }
+      if (status.email) {
+        setUserEmail(status.email);
       }
       // NOUVEAU : Stocker les remaining captures
       if (status.remaining) {
@@ -123,7 +147,15 @@ export default function PopupMain() {
           monthly: status.remaining.monthly,
         });
       }
-    } catch (e) {
+
+      // Check for pending auth state
+      if (typeof chrome !== "undefined" && chrome.storage) {
+        const result = await chrome.storage.local.get("authState");
+        if (result.authState && result.authState.step === "OTP") {
+           setShowAuthDialog(true);
+        }
+      }
+    } catch (e: any) {
       console.error("Failed to check status:", e);
     } finally {
       setCheckingStatus(false);
@@ -225,9 +257,22 @@ export default function PopupMain() {
 
 
 
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      setUserEmail(null);
+      setIsPro(false);
+      fetchUserStatus(); // Refresh status (will likely become anonymous)
+    } catch (e) {
+      console.error("Sign out failed:", e);
+    }
+  };
+
   const handleOpenNotebookLM = () => {
     window.open("https://notebooklm.google.com", "_blank");
   };
+
+  if (!mounted) return null;
 
   return (
     <div className="w-[650px] h-[500px] bg-background text-foreground flex flex-col font-sans">
@@ -295,8 +340,27 @@ export default function PopupMain() {
                 <ExternalLink className="mr-2 h-4 w-4" /> Open NotebookLM
               </DropdownMenuItem>
               <DropdownMenuSeparator />
+              {userEmail ? (
+                <>
+                  <DropdownMenuItem className="text-muted-foreground text-xs justify-center cursor-default bg-muted/50 focus:bg-muted/50">
+                     {userEmail}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleSignOut} className="text-red-600 focus:text-red-700 focus:bg-red-50">
+                     <LogOut className="mr-2 h-4 w-4" /> Sign Out
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                </>
+              ) : (
+                <>
+                  <DropdownMenuItem onClick={() => setShowAuthDialog(true)}>
+                    <Settings className="mr-2 h-4 w-4" /> Link Email / Restore Purchase
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                </>
+              )}
+              <DropdownMenuSeparator />
               <DropdownMenuItem className="text-muted-foreground text-xs justify-center cursor-default hover:bg-transparent">
-                  Version 0.1.1
+                  Version 0.1.2
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -541,6 +605,11 @@ export default function PopupMain() {
           </div>
         </DialogContent>
       </Dialog>
+      <AuthDialog 
+         open={showAuthDialog} 
+         onOpenChange={setShowAuthDialog}
+         onLoginSuccess={() => fetchUserStatus()} 
+      />
       <OnboardingTooltip />
     </div>
   );
