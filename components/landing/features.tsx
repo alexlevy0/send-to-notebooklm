@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Globe, History, Lock, Zap } from "lucide-react";
+import { Globe, History, Lock, Zap, Sparkles } from "lucide-react";
 import { useState } from "react";
 
 const features = [
@@ -29,12 +29,18 @@ const features = [
     className: "md:col-span-1",
   },
   {
-    id: "smart-archives",
-    title: "Smart Archives",
-    description:
-      "Automatically tags and organizes your sources by date and topic.",
-    icon: History,
-    className: "md:col-span-2",
+    id: "direct-integration", // Changed ID
+    title: "Direct Integration",
+    description: "Your browsing history meets your second brain. Send content directly to specific notebooks without copy-pasting.",
+    icon: History, // Reusing History icon, or could be a new one if specified
+    className: "md:col-span-2", // Reusing original className, or could be a new one if specified
+  },
+  {
+    id: "visual-context", // Kept ID
+    title: "Visual Context",
+    description: "Preserves the link to the original source, allowing NotebookLM to process the content with full context.",
+    icon: Sparkles, // Changed icon to Sparkles
+    className: "md:col-span-1", // Reusing original className
   },
 ];
 
