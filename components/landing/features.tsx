@@ -13,13 +13,7 @@ const features = [
     icon: Zap,
     className: "md:col-span-2",
   },
-  {
-    id: "visual-context",
-    title: "Visual Context",
-    description: "Retains original formatting and images.",
-    icon: Globe,
-    className: "md:col-span-1",
-  },
+
   {
     id: "secure-private",
     title: "Secure & Private",
