@@ -89,11 +89,6 @@ export default function RootLayout({
                 "price": "0",
                 "priceCurrency": "EUR"
               },
-              "aggregateRating": {
-                "@type": "AggregateRating",
-                "ratingValue": "5.0",
-                "ratingCount": "100"
-              },
               "description": "Chrome extension to capture web pages, PDFs, and videos directly into Google NotebookLM with a single click.",
               "url": "https://www.send-to-notebooklm.com",
               "author": {
