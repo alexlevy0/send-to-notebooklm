@@ -8,7 +8,7 @@ export function HowItWorks() {
     <section id="how-it-works" className="py-24 px-6 relative overflow-hidden bg-white">
         
       {/* Background Line */}
-      <div className="absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-200 to-transparent hidden md:block" />
+      <div className="absolute top-32 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-200 to-transparent hidden md:block" />
 
       <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-12 relative z-10">
         
