@@ -15,7 +15,7 @@ import {
   Search,
   LogOut,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -36,8 +36,10 @@ import { NotebookLM } from "@/lib/notebooklm/api";
 import type { Notebook } from "@/lib/notebooklm/types";
 import { checkLimit, signOut } from "@/lib/supabase"; // Import checkLimit and signOut
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { useCallback } from "react";
+
 import { AuthDialog } from "./auth-dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { BulkImport } from "./bulk-import";
 
 // TODO: Replace with your actual Stripe links from the Dashboard
 const STRIPE_PAYMENT_LINK = "https://buy.stripe.com/test_28E28s8BcgZd2Td4Z6cfK00";
@@ -65,6 +67,8 @@ export default function PopupMain() {
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [showAuthDialog, setShowAuthDialog] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeTab, setActiveTab] = useState("current");
+  const [showNotebookSelector, setShowNotebookSelector] = useState(false);
 
   const filteredNotebooks = notebooks.filter((nb) =>
     nb.title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -168,10 +172,10 @@ export default function PopupMain() {
   }, []);
 
   // Wrap in useCallback to avoid stale closures in useEffect
-  const handleNotebookSelect = useCallback(async (notebook: Notebook) => {
-    if (addingToNotebookId) return;
-
-    // Save to storage
+  const handleNotebookSelect = useCallback((notebook: Notebook) => {
+    setSelectedNotebookId(notebook.id);
+    setShowNotebookSelector(false);
+    
     if (typeof chrome !== "undefined" && chrome.storage) {
       chrome.storage.local.set({
         lastNotebook: {
@@ -180,54 +184,79 @@ export default function PopupMain() {
         },
       });
     }
+  }, []);
 
-    setSelectedNotebookId(notebook.id);
-
+  const handleCaptureCurrentPage = async () => {
+    if (!selectedNotebookId) {
+      setShowNotebookSelector(true);
+      return;
+    }
     if (!currentUrl) {
-      setError("No URL found to add.");
+      setError("No URL found to capture.");
       return;
     }
 
-    setAddingToNotebookId(notebook.id);
+    setAddingToNotebookId(selectedNotebookId);
+    setError(null);
     try {
-      console.log(`Adding ${currentUrl} to notebook ${notebook.id}...`);
-      await NotebookLM.addUrlSource(notebook.id, currentUrl);
+      await NotebookLM.addUrlSource(selectedNotebookId, [currentUrl]);
 
-      // Success Notification
       if (typeof chrome !== "undefined" && chrome.notifications) {
         chrome.notifications.create({
           type: "basic",
           iconUrl: "icons/icon-48.png",
           title: "Captured!",
-          message: `Page added to "${notebook.title}"`,
+          message: "Page added successfully.",
         });
       }
 
-      console.log("Success!");
-
-      // Close popup after delay
-      setTimeout(() => {
-        window.close();
-      }, 1500);
+      setTimeout(() => window.close(), 1500);
     } catch (err: any) {
-      console.error("Failed to add source:", err);
-
       if (err.name === "LimitReachedError") {
-        // NOUVEAU : Afficher le modal au lieu de juste logger
         setShowUpgradeModal(true);
-        setError(
-          err.reason === "daily_limit"
-            ? "Daily limit reached (10 captures). Upgrade to Pro for unlimited captures."
-            : "Monthly limit reached (200 captures). Upgrade to Pro for unlimited captures."
-        );
       } else {
-        // Show other errors in the UI too, instead of alert
         setError(err.message || "Failed to add source");
       }
     } finally {
       setAddingToNotebookId(null);
     }
-  }, [addingToNotebookId, currentUrl]);
+  };
+
+  const handleBulkCapture = async (urls: string[]) => {
+    if (!selectedNotebookId) {
+      setShowNotebookSelector(true);
+      return;
+    }
+
+    setAddingToNotebookId(selectedNotebookId);
+    setError(null);
+    try {
+      console.log(`Adding ${urls.length} URLs to notebook ${selectedNotebookId}...`);
+      await NotebookLM.addUrlSource(selectedNotebookId, urls);
+
+      if (typeof chrome !== "undefined" && chrome.notifications) {
+        chrome.notifications.create({
+          type: "basic",
+          iconUrl: "icons/icon-48.png",
+          title: "Bulk Capture Complete!",
+          message: `${urls.length} pages added to your notebook.`,
+        });
+      }
+
+      setTimeout(() => {
+        window.close();
+      }, 2000);
+    } catch (err: any) {
+      console.error("Bulk capture failed:", err);
+      if (err.name === "LimitReachedError") {
+        setShowUpgradeModal(true);
+      } else {
+        setError(err.message || "Bulk capture failed");
+      }
+    } finally {
+      setAddingToNotebookId(null);
+    }
+  };
 
   // Restore last selected notebook from storage
   useEffect(() => {
@@ -389,7 +418,7 @@ export default function PopupMain() {
         </div>
       )}
 
-      <main className="flex-1 overflow-hidden flex flex-col p-4 gap-4">
+      <main className="flex-1 min-h-0 flex flex-col p-4 overflow-hidden">
         {error ? (
           <div className="flex flex-col items-center justify-center flex-1 text-center gap-4">
             <div className="text-destructive font-medium">
@@ -427,108 +456,96 @@ export default function PopupMain() {
             </Button>
           </div>
         ) : (
-
           <>
-            <div className="flex flex-col flex-1 min-h-0 gap-2">
-              <div className="flex items-center justify-between shrink-0">
-                <span className="text-sm font-medium text-muted-foreground">
-                  Select a notebook
-                </span>
-                <Badge variant="secondary">{notebooks.length} found</Badge>
-              </div>
-
-              <div className="px-1">
-                <div className="relative">
-                  <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Search notebooks..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-8 bg-card"
-                  />
+            {/* Global Notebook Selector */}
+            <div className="px-1 mb-2">
+              <button 
+                onClick={() => setShowNotebookSelector(true)}
+                className={`w-full flex items-center justify-between p-2 rounded-lg border-2 transition-all group shrink-0
+                  ${selectedNotebookId 
+                    ? "bg-indigo-50/50 border-indigo-100 hover:border-indigo-300" 
+                    : "bg-muted/10 border-dashed border-muted-foreground/30 hover:border-muted-foreground/50"}`}
+              >
+                <div className="flex items-center gap-2 overflow-hidden text-left">
+                  <div className={`p-1.5 rounded-md ${selectedNotebookId ? "bg-indigo-100 text-indigo-600" : "bg-muted text-muted-foreground"}`}>
+                    <Book className="h-4 w-4" />
+                  </div>
+                  <div className="flex flex-col items-start min-w-0">
+                    <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">Target Notebook</span>
+                    <span className="text-sm font-semibold truncate w-full">
+                      {selectedNotebookId 
+                        ? notebooks.find(n => n.id === selectedNotebookId)?.title 
+                        : "Select a notebook..."}
+                    </span>
+                  </div>
                 </div>
-              </div>
-
-              <ScrollArea className="h-full w-full rounded-md border mt-2">
-                <div className="space-y-2 p-3 pr-4">
-                  {searchQuery.trim().length > 0 && (
-                     <Button 
-                        variant="ghost" 
-                        className="w-full justify-start gap-2 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 hover:text-indigo-800 border border-indigo-200"
-                        onClick={async () => {
-                           // Create Notebook Flow
-                           if (loading || addingToNotebookId) return;
-                           const title = searchQuery.trim();
-                           
-                           // Optimistic UI? No, let's wait.
-                           setLoading(true); // Re-use loading state or a new one? 
-                           // Better to use a specific state, but `loading` covers the list area which is fine.
-                           
-                           try {
-                             const newNotebook = await NotebookLM.createNotebook(title);
-                             
-                             // Add to local list
-                             setNotebooks(prev => [newNotebook, ...prev]);
-                             
-                             // Select it
-                             handleNotebookSelect(newNotebook);
-                             
-                             // Clear search
-                             setSearchQuery("");
-                             
-                           } catch (err: any) {
-                             console.error("Failed to create notebook:", err);
-                             setError(err.message || "Failed to create notebook");
-                             setLoading(false);
-                           }
-                        }}
-                     >
-                        <Badge className="bg-indigo-600 hover:bg-indigo-600 text-white">+</Badge>
-                        <span className="truncate">Create "<strong>{searchQuery}</strong>"</span>
-                     </Button>
-                  )}
-
-                  {filteredNotebooks.length === 0 && searchQuery.trim().length === 0 ? (
-                    <div className="text-center text-sm text-muted-foreground py-8">
-                       Type to search or create
-                    </div>
-                  ) : (
-                    filteredNotebooks.map((nb) => (
-                    <Card
-                      key={nb.id}
-                      className={`cursor-pointer group transition-all duration-200 hover:shadow-md hover:border-indigo-200 mx-1 border-transparent hover:bg-white
-                        ${selectedNotebookId === nb.id ? "border-indigo-500 ring-1 ring-indigo-500 bg-indigo-50/30" : "bg-card"} 
-                        ${addingToNotebookId === nb.id ? "opacity-70 pointer-events-none" : ""}`}
-                      onClick={() => handleNotebookSelect(nb)}
-                    >
-                      <div className="p-3 flex items-start gap-3">
-                        <div className="h-8 w-8 rounded bg-primary/10 flex items-center justify-center text-primary shrink-0 mt-0.5">
-                          {addingToNotebookId === nb.id ? (
-                            <RefreshCw className="h-4 w-4 animate-spin" />
-                          ) : (
-                            <Book className="h-4 w-4" />
-                          )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="font-medium text-sm truncate">
-                            {nb.title}
-                          </div>
-                          <div className="text-xs text-muted-foreground truncate font-mono opacity-70">
-                            {nb.id.substring(0, 8)}...
-                          </div>
-                        </div>
-                        {selectedNotebookId === nb.id &&
-                          addingToNotebookId !== nb.id && (
-                            <div className="text-primary shrink-0">
-                              <Check className="h-4 w-4" />
-                            </div>
-                          )}
-                      </div>
-                    </Card>
-                  )))}
+                <div className="pl-2">
+                   <div className="text-xs text-indigo-600 font-medium px-2 py-1 rounded hover:bg-indigo-100 transition-colors">
+                     {selectedNotebookId ? "Change" : "Select"}
+                   </div>
                 </div>
-              </ScrollArea>
+              </button>
             </div>
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col min-h-0">
+              <TabsList className="grid w-full grid-cols-2 shrink-0 mb-2">
+                <TabsTrigger value="current" className="text-xs">Current Page</TabsTrigger>
+                <TabsTrigger value="bulk" className="text-xs">Bulk Import</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="current" className="flex-1 flex flex-col min-h-0 m-0 p-0 gap-4 outline-none data-[state=active]:flex">
+                <div className="flex-1 flex flex-col items-center justify-center text-center p-6 space-y-4">
+                   <div className="relative">
+                      <div className="h-16 w-16 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 animate-in fade-in zoom-in duration-500">
+                         <ExternalLink className="h-8 w-8" />
+                      </div>
+                      {addingToNotebookId && (
+                         <div className="absolute inset-0 flex items-center justify-center">
+                            <RefreshCw className="h-10 w-10 text-indigo-600 animate-spin opacity-40" />
+                         </div>
+                      )}
+                   </div>
+                   <div className="space-y-1">
+                      <h3 className="font-semibold text-sm">Save Current Page</h3>
+                      <p className="text-xs text-muted-foreground truncate max-w-[200px]">
+                         {currentUrl || "No active page detected"}
+                      </p>
+                   </div>
+                   
+                   <Button 
+                      className="w-full h-11 bg-indigo-600 hover:bg-indigo-700 text-white font-medium"
+                      onClick={handleCaptureCurrentPage}
+                      disabled={!!addingToNotebookId || !currentUrl}
+                   >
+                      {addingToNotebookId ? (
+                        <>
+                          <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                          Saving...
+                        </>
+                      ) : (
+                        <>
+                          <Zap className="mr-2 h-4 w-4 fill-current" />
+                          Save Page
+                        </>
+                      )}
+                   </Button>
+
+                   {!selectedNotebookId && (
+                      <p className="text-[10px] text-amber-600 font-medium">
+                        * You must select a notebook above first
+                      </p>
+                   )}
+                </div>
+              </TabsContent>
+
+              <TabsContent value="bulk" className="flex-1 flex flex-col min-h-0 m-0 p-0 data-[state=active]:flex data-[state=active]:flex-col outline-none">
+                <BulkImport 
+                  onCapture={handleBulkCapture} 
+                  isPro={isPro}
+                  remainingQuotas={usageInfo?.daily ?? null}
+                  isAdding={!!addingToNotebookId && selectedNotebookId !== null}
+                />
+              </TabsContent>
+            </Tabs>
           </>
         )}
       </main>
@@ -602,6 +619,71 @@ export default function PopupMain() {
               Maybe Later
             </Button>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showNotebookSelector} onOpenChange={setShowNotebookSelector}>
+        <DialogContent className="max-w-sm p-4 h-[400px] flex flex-col overflow-hidden">
+          <DialogHeader>
+            <DialogTitle className="text-lg">Select Notebook</DialogTitle>
+          </DialogHeader>
+          
+          <div className="relative mb-3">
+             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+             <Input
+                placeholder="Search notebooks..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9"
+             />
+          </div>
+
+          <ScrollArea className="flex-1 min-h-0 border rounded-md">
+             <div className="p-2 space-y-2">
+                {searchQuery.trim().length > 0 && (
+                   <Button 
+                      variant="ghost" 
+                      className="w-full justify-start gap-2 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200"
+                      onClick={async () => {
+                         const title = searchQuery.trim();
+                         setLoading(true);
+                         try {
+                           const newNotebook = await NotebookLM.createNotebook(title);
+                           setNotebooks(prev => [newNotebook, ...prev]);
+                           handleNotebookSelect(newNotebook);
+                           setSearchQuery("");
+                         } catch (err: any) {
+                           setError(err.message || "Failed to create notebook");
+                         } finally {
+                           setLoading(false);
+                         }
+                      }}
+                   >
+                      <Badge className="bg-indigo-600 text-white">+</Badge>
+                      <span className="truncate">Create "<strong>{searchQuery}</strong>"</span>
+                   </Button>
+                )}
+
+                {filteredNotebooks.length === 0 && searchQuery.trim().length === 0 ? (
+                   <div className="text-center py-10 text-sm text-muted-foreground">Type to search...</div>
+                ) : (
+                   filteredNotebooks.map(nb => (
+                      <div
+                         key={nb.id}
+                         onClick={() => handleNotebookSelect(nb)}
+                         className={`p-3 rounded-md border transition-all cursor-pointer flex items-center justify-between group
+                            ${selectedNotebookId === nb.id ? "bg-indigo-50 border-indigo-200" : "hover:border-indigo-100 hover:bg-neutral-50"}`}
+                      >
+                         <div className="flex items-center gap-3 min-w-0">
+                            <Book className={`h-4 w-4 ${selectedNotebookId === nb.id ? "text-indigo-600" : "text-muted-foreground"}`} />
+                            <span className="text-sm font-medium truncate">{nb.title}</span>
+                         </div>
+                         {selectedNotebookId === nb.id && <Check className="h-4 w-4 text-indigo-600 shrink-0" />}
+                      </div>
+                   ))
+                )}
+             </div>
+          </ScrollArea>
         </DialogContent>
       </Dialog>
       <AuthDialog 

@@ -46,50 +46,54 @@ export const NotebookLM = {
     return notebooks;
   },
 
-  async addUrlSource(notebookId: string, url: string): Promise<boolean> {
-    // 1. Check Limits
+  async addUrlSource(notebookId: string, urls: string[]): Promise<boolean> {
+    const count = urls.length;
+    
+    // 1. Check Limits for the total number of sources
     const limitCheck = await checkLimit();
-    if (!limitCheck.allowed) {
+    if (!limitCheck.allowed || (limitCheck.remaining && limitCheck.remaining.daily < count)) {
       throw new LimitReachedError(
-        limitCheck.reason!,
-        limitCheck.resetAt!,
-        limitCheck.remaining! || { daily: 0, monthly: 0 }
+        limitCheck.reason || 'daily_limit',
+        limitCheck.resetAt || new Date().toISOString(),
+        limitCheck.remaining || { daily: 0, monthly: 0 }
       );
     }
 
     const auth = await getAuthTokens();
 
-    // Payload structure found in notebooklm-kit:
-    // [ [ [ null, null, ["URL"], null, null, null, null, null, null, null, 1 ] ], "NOTEBOOK_ID" ]
+    // Payload structure for bulk ADD_SOURCE (izAoDd):
+    // [ [ SourceObject1, SourceObject2, ... ], "NOTEBOOK_ID", [2], [1, null, ...] ]
+    
+    const sources = urls.map(url => [
+      null, 
+      null, 
+      [url], 
+      null, 
+      null, 
+      null, 
+      null, 
+      null, 
+      null, 
+      null, 
+      1 // 1 = URL source type
+    ]);
 
     const payload = [
-      [
-        [
-          null,
-          null,
-          [url],
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          1, // 1 = URL source type
-        ],
-      ],
+      sources,
       notebookId,
+      [2], // Flag batch/web
+      [1, null, null, null, null, null, null, null, null, null, [1]] // Context
     ];
 
     try {
       await rpcCall(RPCMethod.ADD_SOURCE, payload, auth, "notebooks");
       
       // 2. Increment Usage
-      await incrementUsage().catch(console.error); // Don't fail the user action if increment fails
+      await incrementUsage(count).catch(console.error); // Report the total count
       
       return true;
     } catch (e) {
-      console.error("Failed to add source:", e);
+      console.error("Failed to add sources:", e);
       throw e;
     }
   },

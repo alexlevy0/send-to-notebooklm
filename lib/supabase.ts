@@ -86,8 +86,8 @@ export async function checkLimit(): Promise<UsageInfo> {
   return { ...result, userId: session?.user?.id, email: session?.user?.email }; // Append userId and email
 }
 
-export async function incrementUsage(): Promise<void> {
-  const { error } = await supabase.rpc('increment_capture_count');
+export async function incrementUsage(count: number = 1): Promise<void> {
+  const { error } = await supabase.rpc('increment_capture_count', { amount: count });
 
   if (error) {
     console.error('Error incrementing usage:', error);
