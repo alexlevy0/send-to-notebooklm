@@ -16,14 +16,14 @@
 
 ## ️ Roadmap V1.x (Post-Launch) - Research OS
 
-### 🟢 Actuel : Sprint 6 - Bulk & Workflow (V1.2)
+### ⚪ Sprint 6 - Bulk Operations (V1.2)
 **Statut : 100% terminé**
 - [x] **Import en masse natif** : Refonte de l'API pour utiliser le mode batch (`izAoDd`).
 - [x] **Quotas Bulk** : Support de l'incrémentation multi-sources dans Supabase.
-- [ ] **Interface Batch** (UI de sélection multiple) -> Reporté au Sprint 6.5.mentation d'une `RequestQueue` pour éviter le Rate Limiting Google (délai séquentiel).
-- [ ] UX : Détection de doublons (Indicateur "Déjà sauvegardé" basé sur `chrome.storage.local`).
+- [x] **Interface Bulk** : Sélection multiple d'onglets via `BulkImport`.
+- [x] **Permissions** : Accès aux favicons et titres via permission `tabs`.
 
-### Sprint 7 : Quality & Context (V1.3)
+### 🟢 Actuel : Sprint 7 - Context & Readability (V1.3)
 *Objectif :* Résoudre le "Context Rot" et le "Dirty Data".
 - [ ] Core : Intégration de `@mozilla/readability` pour nettoyer le HTML.
 - [ ] Core : Conversion HTML vers Markdown (via `turndown`) avant envoi.
