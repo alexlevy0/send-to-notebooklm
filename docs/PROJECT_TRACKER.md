@@ -10,7 +10,9 @@
 - [x] Sprint 3 : Backend Freemium (100%) ✅
 - [x] Sprint 3.5 : UI Limites Extension (100%) ✅
 - [x] Sprint 4 : Landing Page (100%) ✅
-- [x] Sprint 5 : Launch Preparation (100%) ✅ - En attente de validation Store
+- [x] Sprint 5 : Launch Preparation (100%) ✅
+- [x] Sprint 6 : Bulk Operations (100%) ✅
+- [x] Sprint 6.5 : UX Refinement & Global Selection (100%) ✅
 
 ## ️ Roadmap V1.x (Post-Launch) - Research OS
 
@@ -34,12 +36,23 @@
 - [ ] UI : Indicateur de "Re-sync" si le contenu d'une page a changé depuis la dernière capture.
 
 ## 🔥 Sprint Actuel
-**Sprint 6 - Bulk & Workflow**
-- Démarré : 2026-02-12
-- Statut : Planning & Architecture Queue
+**Sprint 7 - Context & Quality**
+- Démarré : 2026-02-13
+- Statut : Planning
 - Bloqueurs : Aucun
 
 ## ✅ Achievements
+
+### Sprint 6.5 (2026-02-12)
+- ✅ **Sélection Globale** : Dialogue de recherche persistant pour le carnet cible.
+- ✅ **Capture Manuelle** : Suppression de l'auto-capture/auto-close pour un flux plus maîtrisé.
+- ✅ **Fix Layout** : Défilement fluide dans toutes les sections (Popup Chrome 500px).
+- ✅ **Smart Trigger** : Ouverture auto du sélecteur si aucun carnet n'est choisi.
+
+### Sprint 6 (2026-02-12)
+- ✅ Support de l'import d'URLs en masse (RPC `izAoDd`).
+- ✅ Interface de sélection d'onglets (Bulk Import).
+- ✅ Migration SQL pour l'incrémentation précise des quotas.
 
 ### Sprint 5 (2026-02-11)
 - ✅ Flow d'authentification robuste (Magic Links + OTP)
@@ -84,8 +97,8 @@ _Aucun bug critique_
 - Product Hunt : En préparation
 
 ## 📊 Métriques (Pre-Launch)
-- Développement : 9 jours
-- Lignes de code : ~4367 (Total) / ~1500 (Extension) / ~3700 (Landing)
-- Commits : 44
-- Tests manuels : 28/28
+- Développement : 11 jours
+- Lignes de code : ~4800 (Total) / ~1800 (Extension) / ~3700 (Landing)
+- Commits : 52
+- Tests manuels : 34/34
 - Documentation : 100%
