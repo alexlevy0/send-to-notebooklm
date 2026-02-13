@@ -1,6 +1,6 @@
 # 📊 Project Tracker - Send to NotebookLM
 
-**Dernière mise à jour :** 2026-02-12
+**Dernière mise à jour :** 2026-02-13
 
 ## 📈 Progression Globale
 
@@ -42,6 +42,10 @@
 - Bloqueurs : Aucun
 
 ## ✅ Achievements
+
+### 🚀 Grand Launch (2026-02-13)
+- ✅ **Chrome Web Store** : Extension officiellement en ligne ! [Voir sur le store](https://chromewebstore.google.com/detail/send-to-notebooklm/lbgaielbfikhgdlcjobchppkljahfokd)
+- ✅ **V1.0.0 Stable** : Version initiale avec toutes les features core et freemium.
 
 ### Sprint 6.5 (2026-02-12)
 - ✅ **Sélection Globale** : Dialogue de recherche persistant pour le carnet cible.
@@ -93,12 +97,12 @@ _Aucun bug critique_
 - Backend : 100% ✅
 - Landing Page : 100% ✅
 - Tests Manuels : Terminé
-- Chrome Web Store : En cours de review
+- Chrome Web Store : **✅ En ligne / Live**
 - Product Hunt : En préparation
 
 ## 📊 Métriques (Pre-Launch)
-- Développement : 11 jours
+- Développement : 12 jours
 - Lignes de code : ~4800 (Total) / ~1800 (Extension) / ~3700 (Landing)
-- Commits : 52
+- Commits : 53
 - Tests manuels : 34/34
 - Documentation : 100%
