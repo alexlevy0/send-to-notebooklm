@@ -1,10 +1,11 @@
 "use client";
 
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
-import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { CHROME_EXTENSION_URL } from "@/lib/extension-config";
 
 export function Navbar() {
   // Scroll Progress Logic
@@ -12,7 +13,7 @@ export function Navbar() {
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
     damping: 30,
-    restDelta: 0.001
+    restDelta: 0.001,
   });
 
   // Glassmorphism Logic
@@ -39,9 +40,9 @@ export function Navbar() {
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
           className={`pointer-events-auto flex items-center justify-between px-6 py-3 rounded-full transition-all duration-300 ${
-            isScrolled 
-                ? "bg-white/80 backdrop-blur-xl border border-neutral-200/50 shadow-lg shadow-black/5 w-full max-w-5xl" 
-                : "bg-transparent w-full max-w-7xl border border-transparent"
+            isScrolled
+              ? "bg-white/80 backdrop-blur-xl border border-neutral-200/50 shadow-lg shadow-black/5 w-full max-w-5xl"
+              : "bg-transparent w-full max-w-7xl border border-transparent"
           }`}
         >
           {/* Logo */}
@@ -55,7 +56,9 @@ export function Navbar() {
                 className="w-full h-full rounded-lg shadow-sm"
               />
             </div>
-            <span className={`font-bold text-lg tracking-tight transition-colors ${isScrolled ? "text-neutral-900" : "text-neutral-900"}`}>
+            <span
+              className={`font-bold text-lg tracking-tight transition-colors ${isScrolled ? "text-neutral-900" : "text-neutral-900"}`}
+            >
               Send to <span className="text-indigo-600">NotebookLM</span>
             </span>
           </Link>
@@ -75,7 +78,7 @@ export function Navbar() {
               className="rounded-full bg-neutral-900 text-white hover:bg-neutral-800 shadow-lg shadow-indigo-500/20 transition-all hover:scale-105 h-9 px-5 font-medium"
               asChild
             >
-              <Link href="https://chromewebstore.google.com/detail/YOUR_REAL_EXTENSION_ID" target="_blank">
+              <Link href={CHROME_EXTENSION_URL} target="_blank">
                 Add to Chrome
               </Link>
             </Button>
@@ -87,13 +90,13 @@ export function Navbar() {
 }
 
 function NavLink({ href, label }: { href: string; label: string }) {
-    return (
-        <Link
-            href={href}
-            className="text-sm font-medium text-neutral-600 hover:text-indigo-600 transition-colors relative group"
-        >
-            {label}
-            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-indigo-600 transition-all duration-300 group-hover:w-full" />
-        </Link>
-    );
+  return (
+    <Link
+      href={href}
+      className="text-sm font-medium text-neutral-600 hover:text-indigo-600 transition-colors relative group"
+    >
+      {label}
+      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-indigo-600 transition-all duration-300 group-hover:w-full" />
+    </Link>
+  );
 }
