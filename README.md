@@ -11,7 +11,7 @@ An unofficial Chrome Extension to instantly capture web pages and text to Google
 - **Notebook Selection**: Automatically fetches and lists your NotebookLM notebooks (up to 50).
 - **Smart Persistence**: Remembers your last selected notebook for faster capturing.
 - **Modern UI**: Clean, responsive interface built with Shadcn UI and Tailwind CSS.
-- **Privacy Focused**: Runs entirely in your browser. No external servers. No data collection.
+- **Privacy Focused**: Your content goes directly to NotebookLM. We use Supabase for anonymous usage tracking and Stripe for payments (Pro tier). No personal data is collected or sold.
 
 ## 🛠️ Installation
 

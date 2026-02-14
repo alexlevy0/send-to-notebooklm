@@ -1,5 +1,4 @@
 import { NotebookLM } from "./notebooklm/api";
-import { checkLimit, incrementUsage } from "./supabase";
 
 console.log('🚀 Background service worker loaded (TypeScript)');
 
@@ -45,21 +44,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
         return;
       }
 
-      // NOUVEAU : 2. Check limits BEFORE capture
-      const limitStatus = await checkLimit();
-      if (!limitStatus.allowed) {
-        await chrome.notifications.create({
-          type: 'basic',
-          iconUrl: 'icons/icon-48.png',
-          title: '⚡ Limit Reached',
-          message: limitStatus.reason === 'daily_limit' 
-            ? 'Daily limit reached (10 captures). Upgrade to Pro for unlimited captures.'
-            : 'Monthly limit reached (200 captures). Upgrade to Pro for unlimited captures.',
-          buttons: [{ title: "Upgrade to Pro" }]
-        });
-        return;
-      }
-
+      // Limit check is handled inside NotebookLM.addTextSource()
       console.log('Adding to notebook:', lastNotebook);
 
       // 2. Prepare data
@@ -69,9 +54,6 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 
       // 3. Call NotebookLM API (using shared lib)
       await NotebookLM.addTextSource(lastNotebook.id, sourceTitle, selectedText);
-
-      // 5. Increment usage counter is handled inside NotebookLM.addTextSource
-      // await incrementUsage();
 
       // 4. Success Notification
       await chrome.notifications.create({
@@ -91,7 +73,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       // Check for LimitReachedError
       if (error.name === 'LimitReachedError') {
         title = '⚡ Daily Limit Reached';
-        message = 'You have reached your daily limit. Upgrade to Pro for unlimited captures.';
+        message = 'You have reached your daily limit (200 captures). Limits will reset tomorrow.';
       }
 
       await chrome.notifications.create({
@@ -99,7 +81,6 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
         iconUrl: 'icons/icon-48.png',
         title: title,
         message: message,
-        buttons: error.name === 'LimitReachedError' ? [{ title: "Upgrade to Pro" }] : undefined
       });
     }
   }

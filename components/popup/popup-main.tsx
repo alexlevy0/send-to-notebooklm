@@ -42,11 +42,10 @@ import { checkLimit, signOut } from "@/lib/supabase"; // Import checkLimit and s
 import { AuthDialog } from "./auth-dialog";
 import { BulkImport } from "./bulk-import";
 
-// TODO: Replace with your actual Stripe links from the Dashboard
-const STRIPE_PAYMENT_LINK =
-  "https://buy.stripe.com/test_28E28s8BcgZd2Td4Z6cfK00";
+// Early Access: Stripe disabled until business entity is set up
+const WAITLIST_URL = "https://tally.so/r/rjAejR"; // TODO: Create Tally form
 const STRIPE_CUSTOMER_PORTAL =
-  "https://billing.stripe.com/p/login/test_28E28s8BcgZd2Td4Z6cfK00";
+  "https://billing.stripe.com/p/login/test_placeholder"; // Keep for existing Pro users
 
 export default function PopupMain() {
   const [notebooks, setNotebooks] = useState<Notebook[]>([]);
@@ -321,19 +320,18 @@ export default function PopupMain() {
               className={
                 isPro
                   ? "bg-indigo-600 hover:bg-indigo-700"
-                  : "text-muted-foreground border-dashed cursor-pointer hover:bg-muted"
+                  : "text-emerald-700 border-emerald-200 bg-emerald-50 cursor-default"
               }
-              onClick={() =>
-                !isPro &&
-                window.open("https://send-to-notebooklm.com", "_blank")
-              }
+              onClick={undefined}
             >
               {isPro ? (
                 <span className="flex items-center gap-1">
                   <Sparkles className="h-3 w-3 text-yellow-300" /> PRO
                 </span>
               ) : (
-                "Free"
+                <span className="flex items-center gap-1">
+                  <Zap className="h-3 w-3" /> Early Access
+                </span>
               )}
             </Badge>
           )}
@@ -374,17 +372,9 @@ export default function PopupMain() {
               ) : (
                 <DropdownMenuItem
                   className="text-indigo-600 focus:text-indigo-700 focus:bg-indigo-50"
-                  onClick={() => {
-                    const baseUrl = STRIPE_PAYMENT_LINK;
-                    const url = userId
-                      ? `${baseUrl}?client_reference_id=${userId}`
-                      : "https://send-to-notebooklm.com";
-                    // If we have a direct Stripe link, use it. If not, go to landing page (but landing page is hard to pass ID unless we modify it)
-                    // Let's use the direct Stripe link if we have the ID.
-                    window.open(url, "_blank");
-                  }}
+                  onClick={() => window.open(WAITLIST_URL, "_blank")}
                 >
-                  <Sparkles className="mr-2 h-4 w-4" /> Upgrade to Pro
+                  <Sparkles className="mr-2 h-4 w-4" /> Get notified for Pro
                 </DropdownMenuItem>
               )}
               <DropdownMenuSeparator />
@@ -415,34 +405,28 @@ export default function PopupMain() {
               )}
               <DropdownMenuSeparator />
               <DropdownMenuItem className="text-muted-foreground text-xs justify-center cursor-default hover:bg-transparent">
-                Version 1.1.1
+                Version 1.2.0
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
       </header>
 
-      {!isPro && usageInfo && (
-        <div className="px-4 py-3 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-100">
+      {!isPro && (
+        <div className="px-4 py-2.5 bg-gradient-to-r from-emerald-50 to-teal-50 border-b border-emerald-100">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Zap className="h-4 w-4 text-blue-600" />
-              <div className="text-sm">
-                <span className="font-semibold text-blue-900">
-                  {usageInfo.daily} / 10
-                </span>
-                <span className="text-blue-700 ml-1">captures left today</span>
-              </div>
+              <Sparkles className="h-4 w-4 text-emerald-600" />
+              <span className="text-sm font-semibold text-emerald-900">
+                Early Access — Unlimited
+              </span>
             </div>
             <Badge
               variant="secondary"
-              className="text-xs bg-blue-100 text-blue-800"
+              className="text-xs bg-emerald-100 text-emerald-800 border-emerald-200"
             >
-              Free Tier
+              Free during beta
             </Badge>
-          </div>
-          <div className="mt-1 text-xs text-blue-600">
-            Monthly: {usageInfo.monthly} / 200 remaining
           </div>
         </div>
       )}
@@ -653,17 +637,14 @@ export default function PopupMain() {
 
             <Button
               className="w-full bg-indigo-600 hover:bg-indigo-700 text-white h-12 text-lg font-semibold"
-              onClick={() => {
-                const baseUrl = STRIPE_PAYMENT_LINK;
-                const stripeLink = userId
-                  ? `${baseUrl}?client_reference_id=${userId}`
-                  : baseUrl;
-                window.open(stripeLink, "_blank");
-              }}
+              onClick={() => window.open(WAITLIST_URL, "_blank")}
             >
               <Crown className="mr-2 h-5 w-5" />
-              Upgrade Now
+              Join the Pro Waitlist
             </Button>
+            <p className="text-xs text-center text-muted-foreground mt-2">
+              You're on Early Access with generous limits. Pro will offer truly unlimited captures.
+            </p>
 
             <Button
               variant="ghost"
