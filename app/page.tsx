@@ -1,6 +1,8 @@
 import { AdvancedFeatures } from "@/components/landing/advanced-features";
 import { BeforeAfter } from "@/components/landing/before-after";
 import { ChaosToClarity } from "@/components/landing/chaos-to-clarity";
+import { DemoSimulation } from "@/components/landing/demo-simulation";
+import { EcosystemGraph } from "@/components/landing/ecosystem-graph";
 import { FAQ } from "@/components/landing/faq";
 import { Features } from "@/components/landing/features";
 import { Footer } from "@/components/landing/footer";
@@ -11,6 +13,7 @@ import { InfiniteMarquee3D } from "@/components/landing/infinite-marquee-3d";
 import { MagneticCTA } from "@/components/landing/magnetic-cta";
 import { Navbar } from "@/components/landing/navbar";
 import { NeuralBrain } from "@/components/landing/neural-brain";
+import { ParallaxFeatures } from "@/components/landing/parallax-features";
 import { Pricing } from "@/components/landing/pricing";
 import { Stats } from "@/components/landing/stats";
 import { Testimonials } from "@/components/landing/testimonials";
@@ -25,13 +28,17 @@ export default function LandingPage() {
       <Hero />
       <Stats />
       <BeforeAfter />
+      {/* <DemoSimulation /> */}
       <HowItWorks />
       <ChaosToClarity />
       <Features />
-      <InfiniteMarquee3D />
+      {/* <ParallaxFeatures /> */}
+      {/* <EcosystemGraph /> */}
+      {/* <InfiniteMarquee3D /> */}
       {/* <AdvancedFeatures /> */}
-      <UseCases />
       <Pricing />
+      <UseCases />
+
       <Testimonials />
       {/* <NeuralBrain /> */}
       {/* <HolographicInterface /> */}
