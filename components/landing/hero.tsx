@@ -11,6 +11,7 @@ import { Play, Star, Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRef, useState } from "react";
+import { LiquidBackground } from "@/components/landing/liquid-background";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { MagneticButton } from "@/components/ui/magnetic-button";
@@ -55,6 +56,8 @@ export function Hero() {
       ref={containerRef}
       className="relative min-h-[110vh] flex flex-col justify-center overflow-hidden px-6 pt-32 lg:pt-0"
     >
+      <LiquidBackground />
+
       {/* Animated Background Gradients & Mesh */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-100/40 via-white to-white pointer-events-none" />
 

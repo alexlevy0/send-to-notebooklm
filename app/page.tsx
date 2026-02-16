@@ -1,12 +1,21 @@
+import { AdvancedFeatures } from "@/components/landing/advanced-features";
 import { BeforeAfter } from "@/components/landing/before-after";
-import { CTA } from "@/components/landing/cta";
+import { ChaosToClarity } from "@/components/landing/chaos-to-clarity";
 import { FAQ } from "@/components/landing/faq";
 import { Features } from "@/components/landing/features";
 import { Footer } from "@/components/landing/footer";
 import { Hero } from "@/components/landing/hero";
+import { HolographicInterface } from "@/components/landing/holographic-interface";
 import { HowItWorks } from "@/components/landing/how-it-works";
+import { InfiniteMarquee3D } from "@/components/landing/infinite-marquee-3d";
+import { MagneticCTA } from "@/components/landing/magnetic-cta";
 import { Navbar } from "@/components/landing/navbar";
+import { NeuralBrain } from "@/components/landing/neural-brain";
 import { Pricing } from "@/components/landing/pricing";
+import { Stats } from "@/components/landing/stats";
+import { Testimonials } from "@/components/landing/testimonials";
+import { TextReveal } from "@/components/landing/text-reveal";
+import { UseCases } from "@/components/landing/use-cases";
 
 export default function LandingPage() {
   return (
@@ -14,12 +23,22 @@ export default function LandingPage() {
       <div className="fixed inset-0 bg-[linear-gradient(to_bottom,transparent,white)] pointer-events-none" />
       <Navbar />
       <Hero />
-      <Features />
-      <HowItWorks />
+      <Stats />
       <BeforeAfter />
+      <HowItWorks />
+      <ChaosToClarity />
+      <Features />
+      <InfiniteMarquee3D />
+      {/* <AdvancedFeatures /> */}
+      <UseCases />
       <Pricing />
+      <Testimonials />
+      {/* <NeuralBrain /> */}
+      {/* <HolographicInterface /> */}
       <FAQ />
-      <CTA />
+      <TextReveal />
+      <MagneticCTA />
+
       <Footer />
     </div>
   );
