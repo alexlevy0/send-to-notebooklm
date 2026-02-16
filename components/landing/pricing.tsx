@@ -11,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { MagneticButton } from "@/components/ui/magnetic-button";
 import { CHROME_EXTENSION_URL } from "@/lib/extension-config";
 
 const WAITLIST_URL = "https://tally.so/r/rjAejR";
@@ -166,19 +167,23 @@ export function Pricing() {
                 ))}
               </ul>
 
-              <Button
-                asChild
-                size="lg"
-                className={`w-full rounded-full h-14 text-base font-bold shadow-lg transition-all hover:scale-[1.02] relative z-10 ${
-                  tier.featured
-                    ? "bg-white text-neutral-900 hover:bg-neutral-100 shadow-indigo-500/25"
-                    : "bg-white border-2 border-neutral-100 text-neutral-900 hover:bg-neutral-50 hover:border-neutral-200 shadow-none"
-                }`}
-              >
-                <a href={tier.href} target="_blank">
-                  {tier.cta}
-                </a>
-              </Button>
+              <div className="mt-auto relative z-10 w-full">
+                  <MagneticButton>
+                    <Button
+                        asChild
+                        size="lg"
+                        className={`w-full rounded-full h-14 text-base font-bold shadow-lg transition-all hover:scale-[1.02] ${
+                        tier.featured
+                            ? "bg-white text-neutral-900 hover:bg-neutral-100 shadow-indigo-500/25"
+                            : "bg-white border-2 border-neutral-100 text-neutral-900 hover:bg-neutral-50 hover:border-neutral-200 shadow-none"
+                        }`}
+                    >
+                        <a href={tier.href} target="_blank">
+                        {tier.cta}
+                        </a>
+                    </Button>
+                  </MagneticButton>
+              </div>
 
               {tier.featured && (
                 <p className="text-xs text-center text-neutral-500 mt-5 relative z-10 font-medium">

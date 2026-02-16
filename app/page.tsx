@@ -35,15 +35,15 @@ export default function LandingPage() {
       <UseCases />
       <Testimonials />
       <TextReveal />
-      <FAQ />
       {/* <MagneticCTA /> */}
       {/* <NeuralBrain /> */}
       {/* <HolographicInterface /> */}
       {/* <ParallaxFeatures /> */}
       {/* <EcosystemGraph /> */}
-      <InfiniteMarquee3D />
+      {/* <InfiniteMarquee3D /> */}
       {/* <AdvancedFeatures /> */}
       <DemoSimulation />
+      <FAQ />
       <Footer />
     </div>
   );

@@ -1,35 +1,39 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Globe, History, Lock, Zap, Sparkles } from "lucide-react";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { Globe, History, Lock, Sparkles, Zap } from "lucide-react";
 import { SpotlightCard } from "@/components/ui/spotlight-card";
 
 const features = [
   {
     id: "instant-capture",
     title: "Instant Capture",
-    description: "One click to save any article, PDF, or YouTube video to your notebook.",
+    description:
+      "One click to save any article, PDF, or YouTube video to your notebook.",
     icon: Zap,
     className: "md:col-span-2",
   },
   {
     id: "secure-private",
     title: "Secure & Private",
-    description: "Your data goes directly to Google. We don't store your content.",
+    description:
+      "Your data goes directly to Google. We don't store your content.",
     icon: Lock,
     className: "md:col-span-1",
   },
   {
     id: "direct-integration",
     title: "Direct Integration",
-    description: "Your browsing history meets your second brain. Send content directly to specific notebooks without copy-pasting.",
+    description:
+      "Your browsing history meets your second brain. Send content directly to specific notebooks without copy-pasting.",
     icon: History,
     className: "md:col-span-2",
   },
   {
     id: "visual-context",
     title: "Visual Context",
-    description: "Preserves the link to the original source, allowing NotebookLM to process the content with full context.",
+    description:
+      "Preserves the link to the original source, allowing NotebookLM to process the content with full context.",
     icon: Sparkles,
     className: "md:col-span-1",
   },
@@ -37,13 +41,15 @@ const features = [
 
 export function Features() {
   return (
-    <section id="features" className="py-32 px-6 bg-white relative overflow-hidden">
-      
-       {/* Ambient Background - Subtle Touch */}
-       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-40">
-            <div className="absolute top-[-20%] left-[-10%] w-[1000px] h-[1000px] bg-indigo-50/50 rounded-full blur-[120px]" />
-            <div className="absolute bottom-[-10%] right-[-10%] w-[800px] h-[800px] bg-purple-50/50 rounded-full blur-[100px]" />
-       </div>
+    <section
+      id="features"
+      className="py-32 px-6 bg-white relative overflow-hidden"
+    >
+      {/* Ambient Background - Subtle Touch */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-40">
+        <div className="absolute top-[-20%] left-[-10%] w-[1000px] h-[1000px] bg-indigo-50/50 rounded-full blur-[120px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[800px] h-[800px] bg-purple-50/50 rounded-full blur-[100px]" />
+      </div>
 
       <div className="max-w-6xl mx-auto space-y-16 relative z-10">
         <div className="text-center space-y-6">
@@ -55,10 +61,10 @@ export function Features() {
           >
             Built for the modern <br />{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">
-                Knowledge Worker
+              Knowledge Worker
             </span>
           </motion.h2>
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -81,33 +87,76 @@ export function Features() {
 }
 
 function BentoCard({ title, description, icon: Icon, className, index }: any) {
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const mouseX = useSpring(x, { stiffness: 500, damping: 100 });
+  const mouseY = useSpring(y, { stiffness: 500, damping: 100 });
+
+  function onMouseMove({ currentTarget, clientX, clientY }: React.MouseEvent) {
+    const { left, top, width, height } = currentTarget.getBoundingClientRect();
+    x.set(clientX - left - width / 2);
+    y.set(clientY - top - height / 2);
+  }
+
+  function onMouseLeave() {
+    x.set(0);
+    y.set(0);
+  }
+
+  const rotateX = useTransform(mouseY, [-300, 300], [5, -5]);
+  const rotateY = useTransform(mouseX, [-300, 300], [-5, 5]);
+
   return (
     <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5, delay: index * 0.1 }}
-        className={className}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+      className={`${className} perspective-1000`}
+      onMouseMove={onMouseMove}
+      onMouseLeave={onMouseLeave}
     >
-        <SpotlightCard className="h-full rounded-[2rem] border border-neutral-200/60 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden group">
-            <div className="p-10 h-full flex flex-col items-start gap-6">
-                <div className="size-14 rounded-2xl bg-indigo-50/80 border border-indigo-100/50 flex items-center justify-center transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3 shadow-inner">
-                    <Icon className="size-7 text-indigo-600 transition-colors group-hover:text-indigo-700" />
-                </div>
+      <motion.div
+        style={{
+          rotateX,
+          rotateY,
+          transformStyle: "preserve-3d",
+        }}
+        className="h-full rounded-[2rem] border border-neutral-200/60 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-xl transition-shadow duration-300 overflow-hidden group relative"
+      >
+        {/* Depth Glint */}
+        <div className="absolute inset-0 bg-gradient-to-tr from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-20" />
 
-                <div className="space-y-3 relative z-10">
-                    <h3 className="text-2xl font-bold text-neutral-900 tracking-tight group-hover:text-indigo-700 transition-colors duration-300">{title}</h3>
-                    <p className="text-neutral-500 text-base leading-relaxed">
-                    {description}
-                    </p>
-                </div>
+        <div className="p-10 h-full flex flex-col items-start gap-6 relative z-10 transform-style-3d">
+          <div
+            className="size-14 rounded-2xl bg-indigo-50/80 border border-indigo-100/50 flex items-center justify-center transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3 shadow-inner"
+            style={{ transform: "translateZ(20px)" }}
+          >
+            <Icon className="size-7 text-indigo-600 transition-colors group-hover:text-indigo-700" />
+          </div>
 
-                {/* Decorative Pattern in Card - More subtle */}
-                <div className="absolute -bottom-6 -right-6 p-6 opacity-[0.03] pointer-events-none group-hover:opacity-[0.08] transition-opacity duration-500">
-                    <Icon className="size-40 -rotate-12" />
-                </div>
-            </div>
-        </SpotlightCard>
+          <div
+            className="space-y-3 relative z-10"
+            style={{ transform: "translateZ(10px)" }}
+          >
+            <h3 className="text-2xl font-bold text-neutral-900 tracking-tight group-hover:text-indigo-700 transition-colors duration-300">
+              {title}
+            </h3>
+            <p className="text-neutral-500 text-base leading-relaxed">
+              {description}
+            </p>
+          </div>
+
+          {/* Decorative Pattern in Card - More subtle */}
+          <div
+            className="absolute -bottom-6 -right-6 p-6 opacity-[0.03] pointer-events-none group-hover:opacity-[0.08] transition-opacity duration-500"
+            style={{ transform: "translateZ(-10px)" }}
+          >
+            <Icon className="size-40 -rotate-12" />
+          </div>
+        </div>
+      </motion.div>
     </motion.div>
   );
 }
