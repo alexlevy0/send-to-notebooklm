@@ -28,24 +28,22 @@ export default function LandingPage() {
       <Hero />
       <Stats />
       <BeforeAfter />
-      {/* <DemoSimulation /> */}
       <HowItWorks />
       <ChaosToClarity />
       <Features />
-      {/* <ParallaxFeatures /> */}
-      {/* <EcosystemGraph /> */}
-      {/* <InfiniteMarquee3D /> */}
-      {/* <AdvancedFeatures /> */}
       <Pricing />
       <UseCases />
-
       <Testimonials />
+      <TextReveal />
+      <FAQ />
+      {/* <MagneticCTA /> */}
       {/* <NeuralBrain /> */}
       {/* <HolographicInterface /> */}
-      <FAQ />
-      <TextReveal />
-      <MagneticCTA />
-
+      {/* <ParallaxFeatures /> */}
+      {/* <EcosystemGraph /> */}
+      <InfiniteMarquee3D />
+      {/* <AdvancedFeatures /> */}
+      <DemoSimulation />
       <Footer />
     </div>
   );
