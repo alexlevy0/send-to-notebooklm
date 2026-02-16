@@ -178,7 +178,18 @@ export function Hero() {
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-indigo-500/20 rounded-full blur-[100px] -z-10" />
 
             {/* Main Screenshot Container */}
-            <div className="relative group perspective-1000">
+            <motion.div 
+                initial={{ transform: "rotateX(20deg) scale(0.9) translateY(50px)", opacity: 0 }}
+                animate={{ transform: "rotateX(0deg) scale(1) translateY(0px)", opacity: 1 }}
+                transition={{ 
+                    duration: 1.5,
+                    ease: "easeOut",
+                    type: "spring",
+                    stiffness: 100,
+                    damping: 20
+                }}
+                className="relative group perspective-1000"
+            >
               <div className="relative rounded-2xl shadow-2xl overflow-hidden border border-white/20 bg-neutral-900/5 backdrop-blur-sm p-2 transition-all duration-500 group-hover:shadow-[0_20px_60px_-15px_rgba(79,70,229,0.3)]">
                 <div className="relative rounded-xl overflow-hidden bg-white shadow-inner">
                   <Image
@@ -196,11 +207,11 @@ export function Hero() {
 
               {/* Live Badge */}
               <motion.div
-                animate={{ y: [0, -10, 0] }}
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1, y: [0, -10, 0] }}
                 transition={{
-                  duration: 4,
-                  repeat: Infinity,
-                  ease: "easeInOut",
+                  scale: { delay: 1.5, type: "spring" },
+                  y: { duration: 4, repeat: Infinity, ease: "easeInOut", delay: 2 }
                 }}
                 className="absolute -top-6 -right-6 bg-white/90 backdrop-blur-md text-neutral-900 px-4 py-2 rounded-2xl text-sm font-bold shadow-xl border border-white/50 flex items-center gap-2"
               >
@@ -210,7 +221,7 @@ export function Hero() {
                 </span>
                 Live on Store
               </motion.div>
-            </div>
+            </motion.div>
 
             {/* Secondary Screenshot (floating) */}
             <motion.div
