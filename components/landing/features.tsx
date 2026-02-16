@@ -1,8 +1,14 @@
 "use client";
 
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { Globe, History, Lock, Sparkles, Zap } from "lucide-react";
-import { SpotlightCard } from "@/components/ui/spotlight-card";
+import {
+  motion,
+  useMotionValue,
+  useScroll,
+  useSpring,
+  useTransform,
+} from "framer-motion";
+import { History, Lock, Sparkles, Zap } from "lucide-react";
+import { useRef } from "react";
 
 const features = [
   {
@@ -40,53 +46,96 @@ const features = [
 ];
 
 export function Features() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"],
+  });
+
+  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
+  const scale = useTransform(
+    scrollYProgress,
+    [0, 0.2, 0.8, 1],
+    [0.8, 1, 1, 0.8],
+  );
+
+  // Header Animation
+  const headerY = useTransform(scrollYProgress, [0.2, 0.3], [-50, 0]);
+  const headerOpacity = useTransform(scrollYProgress, [0.2, 0.3], [0, 1]);
+
   return (
     <section
+      ref={containerRef}
       id="features"
-      className="py-32 px-6 bg-white relative overflow-hidden"
+      className="h-[250vh] bg-white relative"
     >
-      {/* Ambient Background - Subtle Touch */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-40">
-        <div className="absolute top-[-20%] left-[-10%] w-[1000px] h-[1000px] bg-indigo-50/50 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[800px] h-[800px] bg-purple-50/50 rounded-full blur-[100px]" />
-      </div>
-
-      <div className="max-w-6xl mx-auto space-y-16 relative z-10">
-        <div className="text-center space-y-6">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-4xl md:text-6xl font-bold tracking-tight text-neutral-900"
-          >
-            Built for the modern <br />{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">
-              Knowledge Worker
-            </span>
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-lg text-neutral-600 max-w-2xl mx-auto leading-relaxed"
-          >
-            Simplify your information diet. Stop drowning in bookmarks and start
-            building your second brain with precision.
-          </motion.p>
+      <div className="sticky top-0 h-screen overflow-hidden flex flex-col justify-center py-20">
+        {/* Ambient Background */}
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-40">
+          <div className="absolute top-[-20%] left-[-10%] w-[1000px] h-[1000px] bg-indigo-50/50 rounded-full blur-[120px]" />
+          <div className="absolute bottom-[-10%] right-[-10%] w-[800px] h-[800px] bg-purple-50/50 rounded-full blur-[100px]" />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {features.map((feature, index) => (
-            <BentoCard key={feature.id} {...feature} index={index} />
-          ))}
-        </div>
+        <motion.div style={{ opacity, scale }} className="max-w-6xl mx-auto w-full px-6 relative z-10">
+          <motion.div
+            style={{ y: headerY, opacity: headerOpacity }}
+            className="text-center space-y-6 mb-16"
+          >
+            <h2 className="text-4xl md:text-6xl font-bold tracking-tight text-neutral-900">
+              Built for the modern <br />{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">
+                Knowledge Worker
+              </span>
+            </h2>
+            <p className="text-lg text-neutral-600 max-w-2xl mx-auto leading-relaxed">
+              Simplify your information diet. Stop drowning in bookmarks and
+              start building your second brain with precision.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {features.map((feature, index) => (
+              <ScatteredBentoCard
+                key={feature.id}
+                feature={feature}
+                index={index}
+                progress={scrollYProgress}
+              />
+            ))}
+          </div>
+        </motion.div>
       </div>
     </section>
   );
 }
 
-function BentoCard({ title, description, icon: Icon, className, index }: any) {
+function ScatteredBentoCard({
+  feature,
+  index,
+  progress,
+}: {
+  feature: any;
+  index: number;
+  progress: any;
+}) {
+  // Determine random start positions based on index
+  const xStart = index % 2 === 0 ? -200 : 200;
+  const yStart = index < 2 ? -200 : 200;
+  const rotateStart = index % 2 === 0 ? -15 : 15;
+
+  const x = useTransform(progress, [0.1, 0.6], [xStart, 0]);
+  const y = useTransform(progress, [0.1, 0.6], [yStart, 0]);
+  const rotate = useTransform(progress, [0.1, 0.6], [rotateStart, 0]);
+  const opacity = useTransform(progress, [0.1, 0.4], [0, 1]);
+
+  return (
+    <motion.div style={{ x, y, rotate, opacity }} className={feature.className}>
+      <BentoCard {...feature} />
+    </motion.div>
+  );
+}
+
+function BentoCard({ title, description, icon: Icon }: any) {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
@@ -108,12 +157,8 @@ function BentoCard({ title, description, icon: Icon, className, index }: any) {
   const rotateY = useTransform(mouseX, [-300, 300], [-5, 5]);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      className={`${className} perspective-1000`}
+    <div
+      className="h-full perspective-1000"
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
     >
@@ -157,6 +202,6 @@ function BentoCard({ title, description, icon: Icon, className, index }: any) {
           </div>
         </div>
       </motion.div>
-    </motion.div>
+    </div>
   );
 }
