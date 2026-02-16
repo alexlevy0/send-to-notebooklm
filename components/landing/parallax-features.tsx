@@ -1,7 +1,7 @@
 "use client";
 
-import { MotionValue, motion, useScroll, useTransform } from "framer-motion";
-import { FileText, Globe, Search, Shield, Youtube, Zap } from "lucide-react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { FileText, Globe, Youtube, Zap } from "lucide-react";
 import { useRef } from "react";
 
 const features = [
@@ -64,10 +64,9 @@ export function ParallaxFeatures() {
           {features.map((feature, i) => {
             // Calculate scroll range for each card
             const rangeStart = i * 0.25;
-            const rangeEnd = rangeStart + 0.25;
             return (
               <Card
-                key={i}
+                key={feature.title}
                 feature={feature}
                 progress={scrollYProgress}
                 range={[rangeStart, 1]}
@@ -82,7 +81,19 @@ export function ParallaxFeatures() {
   );
 }
 
-function Card({ feature, progress, range, index, total }: any) {
+function Card({ 
+  feature, 
+  progress, 
+  range, 
+  index, 
+  total 
+}: { 
+  feature: typeof features[0]; 
+  progress: any; 
+  range: number[]; 
+  index: number; 
+  total: number; 
+}) {
   const opacity = useTransform(progress, [range[0], range[0] + 0.1], [0, 1]);
   const y = useTransform(progress, [range[0], range[0] + 0.2], [100, 0]);
   const scale = useTransform(progress, [range[0], range[0] + 0.2], [0.8, 1]);
@@ -90,30 +101,25 @@ function Card({ feature, progress, range, index, total }: any) {
   // Stacking effect: As next cards come in, this one moves up and shrinks slightly
   const exitStart = range[0] + 0.25;
   const exity = useTransform(progress, [exitStart, exitStart + 0.2], [0, -50]);
-  const exitScale = useTransform(
-    progress,
-    [exitStart, exitStart + 0.2],
-    [1, 0.9],
-  );
-  const exitOpacity = useTransform(
-    progress,
-    [exitStart, exitStart + 0.2],
-    [1, 0],
-  ); // Fade out eventually
+  const exitScale = useTransform(progress, [exitStart, exitStart + 0.2], [1, 0.9]);
+  const exitOpacity = useTransform(progress, [exitStart, exitStart + 0.2], [1, 0]);
 
   // Combine transformations
-  // Note: We only want the exit transform if it's NOT the last card
-  const isLast = index === total - 1;
-  const finalY =
-    index === total - 1
-      ? y
-      : useTransform(progress, (v) => (v > exitStart ? exity.get() : y.get()));
-  const finalScale =
-    index === total - 1
-      ? scale
-      : useTransform(progress, (v) =>
-          v > exitStart ? exitScale.get() : scale.get(),
-        );
+  const transformY = useTransform(progress, (v: number) =>
+    v > exitStart ? exity.get() : y.get()
+  );
+
+  const transformScale = useTransform(progress, (v: number) =>
+    v > exitStart ? exitScale.get() : scale.get()
+  );
+
+  const transformOpacity = useTransform(progress, (v: number) =>
+    v > exitStart ? exitOpacity.get() : opacity.get()
+  );
+
+  const finalY = index === total - 1 ? y : transformY;
+  const finalScale = index === total - 1 ? scale : transformScale;
+  const finalOpacity = index === total - 1 ? opacity : transformOpacity;
 
   // Z-index calculation to ensure stacking order
   const zIndex = index;
@@ -121,7 +127,7 @@ function Card({ feature, progress, range, index, total }: any) {
   return (
     <motion.div
       style={{
-        opacity,
+        opacity: finalOpacity,
         y: finalY,
         scale: finalScale,
         zIndex,
